@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ORC Process Map — Tejas Networks</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #F6F8FA;
+  --bg2: #FFFFFF;
+  --bg3: #F0F2F5;
+  --bg4: #E4E8EE;
+  --border: #D0D7DE;
+  --teal: #0D6B52;
+  --teal-dim: #D4EFE7;
+  --teal-glow: rgba(13,107,82,0.08);
+  --purple: #4A3FC0;
+  --purple-dim: #E8E6F8;
+  --purple-glow: rgba(74,63,192,0.08);
+  --amber: #8A6100;
+  --amber-dim: #FEF3C2;
+  --red: #C0252A;
+  --red-dim: #FDEAEA;
+  --red-glow: rgba(192,37,42,0.06);
+  --text: #1A1F26;
+  --text2: #424A53;
+  --text3: #8C959F;
+  --m1: #C0252A;
+  --m2: #8A6100;
+  --m3: #0D6B52;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  line-height: 1.5;
+  padding: 40px 32px 80px;
+  min-width: 900px;
+}
+
+/* ── HEADER ── */
+.doc-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 48px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--border);
+}
+.doc-header-left {}
+.doc-eyebrow {
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: #0F6E56;
+  margin-bottom: 6px;
+}
+.doc-title {
+  font-size: 26px;
+  font-weight: 600;
+  color: var(--text);
+  letter-spacing: -.02em;
+}
+.doc-subtitle {
+  font-size: 13px;
+  color: var(--text2);
+  margin-top: 4px;
+}
+.doc-meta {
+  text-align: right;
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: var(--text3);
+  line-height: 1.8;
+}
+
+/* ── LEGEND ── */
+.legend {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 36px;
+  padding: 12px 16px;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 11px;
+  color: var(--text2);
+}
+.legend-dot {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: 600;
+  font-family: 'DM Mono', monospace;
+  flex-shrink: 0;
+}
+.legend-pill {
+  width: 28px;
+  height: 10px;
+  border-radius: 3px;
+}
+.legend-sep { width: 1px; height: 20px; background: var(--border); }
+
+/* ── SECTION ── */
+.section {
+  margin-bottom: 40px;
+}
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 16px;
+  padding: 14px 18px;
+  border-radius: 10px;
+  border-left: 3px solid var(--sec-color);
+  background: var(--bg2);
+  position: relative;
+}
+.section-id {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--sec-color);
+  letter-spacing: .06em;
+}
+.section-name {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+  flex: 1;
+}
+.section-score {
+  font-family: 'DM Mono', monospace;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 4px 12px;
+  border-radius: 20px;
+  border: 1px solid var(--sec-color);
+  color: var(--sec-color);
+}
+.section-gaps {
+  font-size: 11px;
+  color: var(--red);
+  padding: 3px 10px;
+  background: var(--red-glow);
+  border-radius: 20px;
+}
+
+/* ── STEPS ── */
+.steps { display: flex; flex-direction: column; gap: 0; }
+
+.step-wrap {
+  display: flex;
+  gap: 0;
+  align-items: stretch;
+}
+.step-spine {
+  width: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-shrink: 0;
+}
+.step-dot {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  font-weight: 600;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 2;
+  margin-top: 14px;
+}
+.step-line {
+  width: 1px;
+  flex: 1;
+  background: var(--border);
+  margin: 4px 0;
+}
+.step-line-end { background: transparent; }
+
+.step-card {
+  flex: 1;
+  margin: 8px 0 8px 0;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  overflow: hidden;
+  transition: border-color .2s;
+}
+.step-card:hover { border-color: var(--text3); }
+
+/* card top bar */
+.step-top {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  background: var(--bg3);
+  border-bottom: 1px solid var(--border);
+}
+.step-num-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--text3);
+}
+.step-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  flex: 1;
+}
+.maturity-badge {
+  font-size: 10px;
+  font-weight: 500;
+  padding: 2px 9px;
+  border-radius: 20px;
+  font-family: 'DM Mono', monospace;
+  white-space: nowrap;
+}
+.sev-badge {
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 4px;
+  letter-spacing: .04em;
+  font-family: 'DM Mono', monospace;
+}
+.sev-H { background: #FDEAEA; color: #C0252A; }
+.sev-M { background: #FEF3C2; color: #8A6100; }
+.sev-L { background: #D4EFE7; color: #0D6B52; }
+
+.m1-badge { background: #FDEAEA; color: #C0252A; }
+.m2-badge { background: #FEF3C2; color: #8A6100; }
+.m3-badge { background: #D4EFE7; color: #0D6B52; }
+
+.m1-dot { background: #FDEAEA; color: #C0252A; border: 1.5px solid #C0252A; }
+.m2-dot { background: #FEF3C2; color: #8A6100; border: 1.5px solid #C08000; }
+.m3-dot { background: #D4EFE7; color: #0D6B52; border: 1.5px solid #0D6B52; }
+
+/* card body */
+.step-body { display: flex; flex-direction: column; }
+
+.row {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 9px 14px;
+  border-bottom: 1px solid var(--border);
+}
+.row:last-child { border-bottom: none; }
+
+.row-label {
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  min-width: 68px;
+  padding-top: 1px;
+  flex-shrink: 0;
+}
+.row-text {
+  font-size: 12px;
+  color: var(--text2);
+  line-height: 1.55;
+}
+.row-text strong { color: var(--text); font-weight: 500; }
+
+.row-state .row-label { color: #1860C4; }
+.row-gap .row-label { color: #C0252A; }
+.row-fix .row-label { color: #0D6B52; }
+.row-quote .row-label { color: #8C959F; }
+.row-quote .row-text { font-style: italic; color: #8C959F; font-size: 11px; }
+
+.row-state { background: #F0F7FF; }
+.row-gap { background: #FFF8F8; }
+.row-fix { background: #F0FAF6; }
+.row-quote { background: #FAFAFA; }
+
+/* pending card */
+.pending-card { border-color: #C08000; }
+.pending-card .step-top { background: #FFFBEB; }
+
+/* ── SUMMARY ── */
+.summary {
+  margin-top: 48px;
+  padding-top: 32px;
+  border-top: 1px solid var(--border);
+}
+.summary-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 16px;
+}
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 12px;
+  margin-bottom: 20px;
+}
+.summary-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px;
+}
+.s-id { font-size: 10px; color: var(--text3); font-family: 'DM Mono', monospace; margin-bottom: 4px; }
+.s-name { font-size: 11px; font-weight: 500; color: var(--text2); margin-bottom: 10px; line-height: 1.4; }
+.s-score { font-size: 22px; font-weight: 600; font-family: 'DM Mono', monospace; margin-bottom: 8px; }
+.s-bar-bg { height: 4px; background: var(--bg4); border-radius: 2px; overflow: hidden; margin-bottom: 8px; }
+.s-bar { height: 100%; border-radius: 2px; }
+.s-gaps { font-size: 10px; }
+.s-gaps span { color: var(--red); font-weight: 500; }
+
+.overall-box {
+  background: var(--bg2);
+  border: 1px solid #0F6E56;
+  border-radius: 10px;
+  padding: 18px 22px;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+.overall-score-big {
+  font-size: 36px;
+  font-weight: 600;
+  font-family: 'DM Mono', monospace;
+  color: #0F6E56;
+  flex-shrink: 0;
+}
+.overall-label { font-size: 11px; color: var(--text3); margin-bottom: 4px; text-transform: uppercase; letter-spacing: .08em; }
+.overall-desc { font-size: 12px; color: var(--text2); line-height: 1.6; }
+.overall-insight {
+  margin-top: 6px;
+  font-size: 12px;
+  color: #0D6B52;
+  font-weight: 500;
+}
+</style>
+</head>
+<body>
+
+<div class="doc-header">
+  <div class="doc-header-left">
+    <div class="doc-eyebrow">D1 Diagnostic · APQC Process Maturity · ORC</div>
+    <div class="doc-title">Recruiting Cloud — Process Map</div>
+    <div class="doc-subtitle">Step-level current state, bottlenecks, and recommendations · Tejas Networks</div>
+  </div>
+  <div class="doc-meta">
+    TAS Internship 2026<br>
+    Utsav Chouhan<br>
+    19 sub-processes assessed<br>
+    Overall: 1.8 / 3.0
+  </div>
+</div>
+
+<div class="legend">
+  <div class="legend-item">
+    <div class="legend-dot m1-dot">1</div>
+    Level 1 — Manual
+  </div>
+  <div class="legend-item">
+    <div class="legend-dot m2-dot">2</div>
+    Level 2 — Partial
+  </div>
+  <div class="legend-item">
+    <div class="legend-dot m3-dot">3</div>
+    Level 3 — Integrated
+  </div>
+  <div class="legend-sep"></div>
+  <div class="legend-item">
+    <div class="sev-badge sev-H">H</div>
+    High gap — direct business cost
+  </div>
+  <div class="legend-item">
+    <div class="sev-badge sev-M">M</div>
+    Medium — workarounds exist
+  </div>
+  <div class="legend-item">
+    <div class="sev-badge sev-L">L</div>
+    Low — minor inconvenience
+  </div>
+</div>
+
+<div id="root"></div>
+
+<div class="summary">
+  <div class="summary-title">ORC maturity summary</div>
+  <div class="summary-grid">
+    <div class="summary-card">
+      <div class="s-id">5.1</div>
+      <div class="s-name">Manage Requisitions</div>
+      <div class="s-score" style="color:#92680A">2.3</div>
+      <div class="s-bar-bg"><div class="s-bar" style="width:77%;background:#92680A"></div></div>
+      <div class="s-gaps">0 high gaps · <span>POC trail missing</span></div>
+    </div>
+    <div class="summary-card">
+      <div class="s-id">5.2</div>
+      <div class="s-name">Recruit &amp; Screen</div>
+      <div class="s-score" style="color:#92680A">2.0</div>
+      <div class="s-bar-bg"><div class="s-bar" style="width:67%;background:#92680A"></div></div>
+      <div class="s-gaps"><span>2 high gaps</span> · manual screening</div>
+    </div>
+    <div class="summary-card">
+      <div class="s-id">5.3</div>
+      <div class="s-name">Select &amp; Offer</div>
+      <div class="s-score" style="color:#C0292D">1.7</div>
+      <div class="s-bar-bg"><div class="s-bar" style="width:57%;background:#C0292D"></div></div>
+      <div class="s-gaps"><span>1 high gap</span> · 40L+ off-system</div>
+    </div>
+    <div class="summary-card">
+      <div class="s-id">5.4</div>
+      <div class="s-name">Pre-Hire</div>
+      <div class="s-score" style="color:#0F6E56">2.7</div>
+      <div class="s-bar-bg"><div class="s-bar" style="width:90%;background:#0F6E56"></div></div>
+      <div class="s-gaps"><span>1 high gap</span> · onboarding handoff TBC</div>
+    </div>
+    <div class="summary-card">
+      <div class="s-id">5.5</div>
+      <div class="s-name">Analytics</div>
+      <div class="s-score" style="color:#C0292D">1.0</div>
+      <div class="s-bar-bg"><div class="s-bar" style="width:33%;background:#C0292D"></div></div>
+      <div class="s-gaps"><span>3 high gaps</span> · zero dashboards</div>
+    </div>
+  </div>
+  <div class="overall-box">
+    <div>
+      <div class="overall-label">Overall ORC score</div>
+      <div class="overall-score-big">1.8 <span style="font-size:16px;color:var(--text2)">/ 3.0</span></div>
+    </div>
+    <div style="flex:1">
+      <div class="overall-desc">Core transactional processes — job posting, BGV, document collection — are in Oracle and working. Screening, offer governance, and all five analytics sub-processes are the critical gaps. Zero reporting layer exists. Every recommended fix is within the existing Oracle licence — this is a configuration and activation problem, not a procurement problem.</div>
+      <div class="overall-insight">→ Activating source tracking + building pipeline funnel report alone moves Analytics from 1.0 to 2.5+</div>
+    </div>
+  </div>
+</div>
+
+<script>
+const data = [
+  {
+    id: "5.1", name: "Manage Workforce Requisitions",
+    color: "#6E5FD8", score: "2.3", highGaps: 0,
+    steps: [
+      {
+        id: "5.1.1", name: "Develop position requirements", maturity: 2, sev: "M",
+        state: "JDs maintained offline in Word/shared drive. Recruiter copy-pastes content into Oracle at requisition stage. No live JD library exists in ORC. Position requirements defined informally before Oracle is touched.",
+        gap: "No standardised grade, skills, or criteria fields captured at source. Every requisition starts from scratch.",
+        fix: "Build a JD library within ORC Position Management. Standardise grade, skills, and criteria fields at source. Eliminates copy-paste and creates reusable requisition templates.",
+        quote: "JDs are sitting offline. It is copied and pasted in Oracle while raising the requisition."
+      },
+      {
+        id: "5.1.2", name: "Create and approve requisition", maturity: 2, sev: "M",
+        state: "Hiring manager initiates, recruiter drafts in Oracle. Approval routes to Function Head via tool. POC assignment between team members is an offline verbal/email discussion — not recorded in Oracle.",
+        gap: "POC assignment not in Oracle. No audit trail for accountability on who owns which requisition.",
+        fix: "Record POC assignment within ORC requisition fields. Custom field or note section is sufficient — low configuration effort.",
+        quote: "Understanding between team regarding POC based on business unit and groups. It's an offline discussion. Delegation done verbally/mail."
+      },
+      {
+        id: "5.1.3", name: "Post requisition to job boards", maturity: 3, sev: "L",
+        state: "Post-approval, job formatting done in Oracle. Employer description auto-populates. LinkedIn integrated — auto-posts to career page. Internal opportunity marketplace also active.",
+        gap: "No critical gap. Monitor LinkedIn integration uptime. Naukri not confirmed as integrated.",
+        fix: "Consider adding Naukri integration to consolidate source tracking in one system. No immediate action required.",
+        quote: "LinkedIn integrated, gets posted on career page. Internal job posted in Oracle opportunity marketplace."
+      }
+    ]
+  },
+  {
+    id: "5.2", name: "Recruit and Screen Candidates",
+    color: "#E5484D", score: "2.0", highGaps: 2,
+    steps: [
+      {
+        id: "5.2.1", name: "Source candidates", maturity: 2, sev: "M",
+        state: "Three active channels: career site (inbound), LinkedIn outbound, and internal referral via opportunity marketplace. Source tagging is possible in Oracle but not confirmed as consistently used.",
+        gap: "Inconsistent source tagging means channel effectiveness cannot be measured even if a report were built today.",
+        fix: "Enforce source tagging at application stage in ORC. This is the foundational data point for all source-of-hire analytics — must be fixed before any 5.5 analytics work.",
+        quote: "Site available, LinkedIn outbound, someone can refer from opportunity marketplace."
+      },
+      {
+        id: "5.2.2", name: "Manage candidate applications", maturity: 2, sev: "H",
+        state: "All applications visible in ORC pipeline. No auto-screening, no CV parsing, no AI-assisted shortlisting. Recruiter manually reviews every single application across all open requisitions.",
+        gap: "No tool to sort or filter by relevance. Entire application review is manual — scales poorly as hiring volume grows.",
+        fix: "Activate ORC screening rules and disqualification filters. Configure knockout questions at application stage. Explore Oracle AI-assisted screening within existing licence.",
+        quote: "Active applications visible in tool but no shortlisting tool/screening to sort relevant CVs. Auto screening and parsing not available, candidates are screened manually."
+      },
+      {
+        id: "5.2.3", name: "Screen and shortlist candidates", maturity: 1, sev: "H",
+        state: "No shortlisting tool in use. Recruiter manually reads CVs and moves candidates forward. Auto screening and CV parsing not activated. Identical bottleneck to 5.2.2 — double manual effort at consecutive stages.",
+        gap: "Entire shortlisting process outside Oracle. No screening criteria configured. Most labour-intensive step in the process with zero system support.",
+        fix: "Configure ORC Candidate Screening with disqualification rules and scoring criteria per role type. Available within existing ORC licence — requires configuration only, no additional cost.",
+        quote: "Active applications visible in tool but no shortlisting tool. Candidates are screened manually."
+      },
+      {
+        id: "5.2.4", name: "Conduct interviews and assessments", maturity: 2, sev: "M",
+        state: "Hiring manager moves candidate to shortlisted for interview. Recruiter schedules via Oracle — Teams integration active, supports phone and in-person. Feedback captured in Oracle. Critical gap: feedback not directly downloadable from the candidate page.",
+        gap: "Feedback download requires recruiter to run a separate report and manually insert candidate details each time — adds friction to every hire.",
+        fix: "Configure OTBI interview feedback report with pre-set filters. Explore Oracle Digital Assistant for one-click feedback extraction. Small fix, high daily-use impact.",
+        quote: "Feedback captured in the tool but cannot be downloaded just from the page. Recruiter has to download it from reports by inserting candidate details."
+      },
+      {
+        id: "5.2.5", name: "Manage candidate communication", maturity: 3, sev: "L",
+        state: "Rejection emails sent automatically when candidate is rejected at any stage. Hiring manager can reject at any pipeline stage. Automated rejection comms working as designed.",
+        gap: "Only rejection is automated. Interview confirmation, offer stage updates, and post-joining welcome are not covered.",
+        fix: "Extend automated communication templates to cover: interview confirmation, offer stage update, and post-joining welcome message. Low effort — template configuration only.",
+        quote: "If you reject the candidate, rejection mail is sent automatically. Hiring manager has the privilege to reject at any stage."
+      }
+    ]
+  },
+  {
+    id: "5.3", name: "Select and Make Offer",
+    color: "#F2B705", score: "1.7", highGaps: 1,
+    steps: [
+      {
+        id: "5.3.1", name: "Select final candidate", maturity: 2, sev: "H",
+        state: "Panel feedback recorded in Oracle. Offer fitment discussion offline on email. Salary documents collected via tool. Compensation decision by Function Head and Recruitment Manager. CHRO approval required above 40L CTC — this approval happens over email, not in Oracle.",
+        gap: "CHRO-level approvals above 40L CTC leave zero Oracle audit trail. Compensation decisions for high-value hires are entirely off-system.",
+        fix: "Bring compensation approval into ORC offer approval workflow. Activate conditional approval routing based on CTC threshold. Critical for compliance and audit.",
+        quote: "Compensation decision given by Function head and Recruitment Manager / CHRO (above 40 lakhs CTC) — decision sent on mail."
+      },
+      {
+        id: "5.3.2", name: "Generate and extend offer letter", maturity: 2, sev: "M",
+        state: "Offer letter auto-generated by Oracle once details are filled in. Triggered after negotiation and acceptance confirmed on email. Oracle generates the document but the negotiation data that preceded it is not captured.",
+        gap: "Offer letter generation date, e-sign status, and version not recorded. Offer-to-joining conversion cannot be tracked.",
+        fix: "Add field to record offer letter generation date and whether e-sign or physical signature was used. Enables offer-to-joining conversion tracking in OTBI.",
+        quote: "Offer letter auto generated — details need to be filled in Oracle after negotiations and acceptance on mail."
+      },
+      {
+        id: "5.3.3", name: "Manage offer negotiation and acceptance", maturity: 1, sev: "M",
+        state: "Salary negotiation conducted entirely on email. Candidate gives acceptance on email. Only after email acceptance is the offer letter generated in Oracle. Zero negotiation trail, zero counter-offer record, zero acceptance timestamp in system.",
+        gap: "No negotiation record, no counter-offer data, no acceptance date in Oracle. If a dispute arises, there is no system record.",
+        fix: "Activate ORC Offer Status Tracking. Capture: proposed CTC, negotiated CTC, acceptance date, and medium of acceptance. Low configuration cost — recoverable gap.",
+        quote: "Proposed salary negotiation done on mail. Candidate gives acceptance on mail — then offer letter is generated."
+      }
+    ]
+  },
+  {
+    id: "5.4", name: "Pre-Hire and Onboarding Handoff",
+    color: "#1D9E75", score: "2.7", highGaps: 1,
+    steps: [
+      {
+        id: "5.4.1", name: "Initiate background verification", maturity: 3, sev: "L",
+        state: "BGV triggered through Oracle tool a few days before joining. Third-party vendor Cfirst. Candidate receives link to upload documents directly. Cfirst approves and sends confirmation email to HR team. Integration is functional.",
+        gap: "BGV confirmation may arrive only via email — not confirmed as automatically updating Oracle record. Minor compliance gap.",
+        fix: "Confirm BGV status field is consistently updated in Oracle post-Cfirst approval. Minor configuration check — not a rebuild.",
+        quote: "Few days before joining, BGV is triggered through tool. Third party vendor Cfirst. Once they approve, team gets the mail."
+      },
+      {
+        id: "5.4.2", name: "Collect pre-joining documents", maturity: 3, sev: "L",
+        state: "Recruiter selects 'Move to HR' in Oracle. This triggers automated email to candidate to complete their journey in HCM — document upload via portal. Fully tool-driven.",
+        gap: "No confirmed automated follow-up if documents are incomplete before Day 1. Manual chase may be required.",
+        fix: "Verify incomplete submissions trigger an automatic follow-up notification rather than requiring recruiter to manually track and chase.",
+        quote: "Recruiter selects Move to HR — it triggers mail to candidate to complete the journey in HCM."
+      },
+      {
+        id: "5.4.3", name: "Hand off to onboarding", maturity: 2, sev: "H", pending: true,
+        state: "⚠ Data pending — to be confirmed with Chaitra (Onboarding Team). Based on 5.4.2, 'Move to HR' action appears to trigger the handoff. Full onboarding workflow activation status unknown.",
+        gap: "If onboarding journey is not auto-triggered, employee record creation depends on manual follow-up. Critical dependency for all onboarding metrics downstream.",
+        fix: "Confirm with Chaitra: Is Oracle onboarding journey auto-triggered post 'Move to HR'? If not, this is a broken handoff — the most critical fix in the 5.4 group.",
+        quote: "⚠ Pending — confirm with Chaitra before finalising this score."
+      }
+    ]
+  },
+  {
+    id: "5.5", name: "Recruiting Reporting and Analytics",
+    color: "#E5484D", score: "1.0", highGaps: 3,
+    steps: [
+      {
+        id: "5.5.1", name: "Track time-to-hire and time-to-fill", maturity: 1, sev: "H",
+        state: "Not tracked. No report or metric in use. Time-to-hire and time-to-fill data exists in Oracle — requisition open date and offer acceptance date are both captured — but no OTBI report has been built to surface them.",
+        gap: "Zero measurement despite data existing. Leadership cannot see hiring speed. This is the single fastest quick win on the entire ORC map.",
+        fix: "Build OTBI Time-to-Hire report using Requisition Open Date and Offer Acceptance Date. Data already in Oracle — zero additional configuration cost. Benchmark against SHRM 36-day average for tech roles.",
+        quote: "No."
+      },
+      {
+        id: "5.5.2", name: "Track source-of-hire and channel effectiveness", maturity: 1, sev: "H",
+        state: "LinkedIn is the dominant channel. Naukri also used. No channel effectiveness analysis has ever been conducted. Source tagging inconsistency (from 5.2.1) means even if a report were built today, data quality would be unreliable.",
+        gap: "Upstream fix required first — source tagging must be enforced at 5.2.1 before this report is viable. Sequence dependency.",
+        fix: "Fix source tagging first (see 5.2.1 recommendation). Then build OTBI Source Attribution report. Do not build the report before the data quality problem is solved.",
+        quote: "LinkedIn and Naukri used, mostly LinkedIn. No analysis."
+      },
+      {
+        id: "5.5.3", name: "Monitor pipeline health and conversion rates", maturity: 1, sev: "H",
+        state: "Not monitored. No pipeline funnel view, no stage-wise drop-off tracking, no offer acceptance rate metric. Data exists in Oracle at every pipeline stage but has never been reported on.",
+        gap: "No visibility into where candidates are dropping out of the funnel. Cannot identify whether the problem is sourcing, screening, interviews, or offers.",
+        fix: "Build ORC Pipeline Funnel dashboard: applications → screened → interviewed → offered → accepted. Stage-wise conversion rates reveal exact recruiter and process bottlenecks.",
+        quote: "No."
+      },
+      {
+        id: "5.5.4", name: "Measure quality of hire", maturity: 1, sev: "M",
+        state: "Not measured. No post-hire performance correlation with source, recruiter, or channel. Would require a cross-module join between ORC and Performance Management — neither report exists nor has the join been attempted.",
+        gap: "Phase 2 dependency — requires Performance module data quality to be confirmed before this is viable.",
+        fix: "Phase 2 recommendation: build cross-module OTBI report joining ORC hire data with Performance ratings at 6-month and 12-month post-join marks.",
+        quote: "No."
+      },
+      {
+        id: "5.5.5", name: "Diversity and inclusion metrics", maturity: 1, sev: "M",
+        state: "Not tracked at any pipeline stage. No gender, category, or geography split across applications, shortlists, offers, or joins. Data fields likely exist in Oracle but no D&I report has been built.",
+        gap: "No D&I pipeline visibility at any funnel stage. Cannot identify where diversity drop-off occurs.",
+        fix: "Build D&I Recruiting dashboard: gender mix at each pipeline stage (applied → shortlisted → offered → joined). Aligns to NASSCOM benchmarking standards.",
+        quote: "No."
+      }
+    ]
+  }
+];
+
+const maturityLabel = {1:"L1 — Manual", 2:"L2 — Partial", 3:"L3 — Integrated"};
+const maturityClass = {1:"m1-badge m1-dot", 2:"m2-badge m2-dot", 3:"m3-badge m3-dot"};
+const dotClass = {1:"m1-dot", 2:"m2-dot", 3:"m3-dot"};
+
+let html = '';
+
+data.forEach(sec => {
+  html += `<div class="section">
+    <div class="section-header" style="--sec-color:${sec.color}">
+      <div class="section-id">${sec.id}</div>
+      <div class="section-name">${sec.name}</div>
+      ${sec.highGaps > 0 ? `<div class="section-gaps">${sec.highGaps} high gap${sec.highGaps>1?'s':''}</div>` : ''}
+      <div class="section-score">${sec.score} / 3.0</div>
+    </div>
+    <div class="steps">`;
+
+  sec.steps.forEach((step, i) => {
+    const isLast = i === sec.steps.length - 1;
+    html += `
+      <div class="step-wrap">
+        <div class="step-spine">
+          <div class="step-dot ${dotClass[step.maturity]}">${step.maturity}</div>
+          <div class="step-line ${isLast ? 'step-line-end' : ''}"></div>
+        </div>
+        <div class="step-card ${step.pending ? 'pending-card' : ''}">
+          <div class="step-top">
+            <span class="step-num-label">${step.id}</span>
+            <span class="step-name">${step.name}</span>
+            <span class="sev-badge sev-${step.sev}">${step.sev}</span>
+            <span class="maturity-badge ${step.maturity === 1 ? 'm1-badge' : step.maturity === 2 ? 'm2-badge' : 'm3-badge'}">${maturityLabel[step.maturity]}</span>
+          </div>
+          <div class="step-body">
+            <div class="row row-state">
+              <span class="row-label">Current state</span>
+              <span class="row-text">${step.state}</span>
+            </div>
+            <div class="row row-gap">
+              <span class="row-label">Bottleneck</span>
+              <span class="row-text">${step.gap}</span>
+            </div>
+            <div class="row row-fix">
+              <span class="row-label">Fix →</span>
+              <span class="row-text">${step.fix}</span>
+            </div>
+            <div class="row row-quote">
+              <span class="row-label">Verbatim</span>
+              <span class="row-text">"${step.quote}"</span>
+            </div>
+          </div>
+        </div>
+      </div>`;
+  });
+
+  html += `</div></div>`;
+});
+
+document.getElementById('root').innerHTML = html;
+</script>
+</body>
+</html>

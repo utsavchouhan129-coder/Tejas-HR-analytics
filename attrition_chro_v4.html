@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Attrition Analysis — CHRO View · Tejas Networks</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{background:#F4F6F9;color:#0D1117;font-family:'DM Sans',sans-serif;font-size:13px;min-height:100vh;}
+
+/* TOPBAR */
+.topbar{background:#fff;border-bottom:1px solid #E2E6EA;padding:0 24px;height:52px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200;box-shadow:0 1px 4px rgba(0,0,0,.06);}
+.topbar-left{display:flex;align-items:center;gap:16px;}
+.logo-chip{font-size:11px;font-weight:700;letter-spacing:.08em;color:#1D9E75;background:rgba(29,158,117,.08);border:1px solid rgba(29,158,117,.25);padding:4px 10px;border-radius:4px;text-transform:uppercase;}
+.page-title{font-size:13px;font-weight:500;color:#6B7280;}
+.topbar-right{display:flex;align-items:center;gap:10px;}
+.phase-tag{font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:3px 8px;border-radius:3px;background:rgba(29,158,117,.08);color:#1D9E75;border:1px solid rgba(29,158,117,.25);}
+.chro-badge{font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:3px 10px;border-radius:3px;background:rgba(110,95,216,.08);color:#6E5FD8;border:1px solid rgba(110,95,216,.25);}
+.data-stamp{font-family:'DM Mono',monospace;font-size:10px;color:#9CA3AF;}
+
+/* FILTER BAR */
+.filterbar{background:#fff;border-bottom:1px solid #E2E6EA;padding:8px 24px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.filter-group{display:flex;align-items:center;gap:6px;}
+.filter-label{font-size:9px;font-weight:700;color:#9CA3AF;text-transform:uppercase;letter-spacing:.08em;white-space:nowrap;}
+select{background:#F9FAFB;border:1px solid #E2E6EA;color:#0D1117;font-family:'DM Sans',sans-serif;font-size:11px;padding:4px 24px 4px 8px;border-radius:4px;outline:none;cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='5'%3E%3Cpath d='M0 0l4 5 4-5z' fill='%236B7280'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 7px center;}
+select:focus{border-color:#1D9E75;box-shadow:0 0 0 2px rgba(29,158,117,.1);}
+.filter-divider{width:1px;height:18px;background:#E2E6EA;margin:0 2px;flex-shrink:0;}
+
+/* MAIN */
+.main{padding:16px 24px;display:flex;flex-direction:column;gap:14px;}
+
+/* KPI ROW */
+.kpi-row{display:grid;grid-template-columns:repeat(7,1fr);gap:10px;}
+.kpi{background:#fff;border:1px solid #E2E6EA;border-radius:8px;padding:12px 14px;position:relative;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.04);}
+.kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;}
+.kpi.teal::before{background:#1D9E75;}
+.kpi.purple::before{background:#6E5FD8;}
+.kpi.amber::before{background:#F0A500;}
+.kpi.red::before{background:#E05252;}
+.kpi.blue::before{background:#3B82F6;}
+.kpi.slate::before{background:#94A3B8;}
+.kpi-label{font-size:9px;font-weight:600;color:#9CA3AF;text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px;}
+.kpi-value{font-size:22px;font-weight:700;line-height:1;margin-bottom:5px;}
+.kpi-value.teal{color:#1D9E75;}.kpi-value.red{color:#E05252;}.kpi-value.amber{color:#F0A500;}.kpi-value.purple{color:#6E5FD8;}.kpi-value.dark{color:#0D1117;}
+.kpi-sub{font-size:10px;color:#6B7280;display:flex;align-items:center;gap:4px;flex-wrap:wrap;}
+.delta{font-size:9px;font-weight:600;padding:1px 5px;border-radius:3px;}
+.delta.up{background:rgba(224,82,82,.1);color:#E05252;}
+.delta.down{background:rgba(29,158,117,.1);color:#1D9E75;}
+.delta.neu{background:rgba(240,165,0,.1);color:#F0A500;}
+
+/* SECTION */
+.section-header{display:flex;align-items:center;gap:8px;margin-bottom:2px;}
+.section-title{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#6B7280;white-space:nowrap;}
+.section-line{flex:1;height:1px;background:#E2E6EA;}
+.sbadge{font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;padding:2px 7px;border-radius:3px;white-space:nowrap;}
+.sbadge.teal{background:rgba(29,158,117,.08);color:#1D9E75;border:1px solid rgba(29,158,117,.2);}
+.sbadge.purple{background:rgba(110,95,216,.08);color:#6E5FD8;border:1px solid rgba(110,95,216,.2);}
+.sbadge.amber{background:rgba(240,165,0,.08);color:#C07A00;border:1px solid rgba(240,165,0,.2);}
+.sbadge.red{background:rgba(224,82,82,.08);color:#E05252;border:1px solid rgba(224,82,82,.2);}
+
+/* CARD */
+.card{background:#fff;border:1px solid #E2E6EA;border-radius:8px;padding:14px;box-shadow:0 1px 3px rgba(0,0,0,.04);}
+.card-title{font-size:10px;font-weight:600;color:#6B7280;text-transform:uppercase;letter-spacing:.07em;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px;}
+
+/* TIME TOGGLE */
+.chart-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:6px;}
+.chart-label{font-size:10px;font-weight:600;color:#6B7280;text-transform:uppercase;letter-spacing:.07em;}
+.time-toggle{display:flex;gap:2px;}
+.tt-btn{font-size:9px;font-weight:600;padding:3px 8px;border-radius:3px;border:1px solid #E2E6EA;background:transparent;color:#9CA3AF;cursor:pointer;transition:all .15s;}
+.tt-btn.active{background:rgba(29,158,117,.08);color:#1D9E75;border-color:rgba(29,158,117,.3);}
+.tt-btn:hover:not(.active){background:#F4F6F9;color:#6B7280;}
+
+/* GRIDS */
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;}
+.grid-4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:10px;}
+.grid-3-2{display:grid;grid-template-columns:3fr 2fr;gap:12px;}
+.grid-2-1{display:grid;grid-template-columns:2fr 1fr;gap:12px;}
+
+/* CHART */
+.chart-wrap canvas{max-height:200px;}
+.chart-wrap.tall canvas{max-height:260px;}
+.chart-wrap.short canvas{max-height:150px;}
+
+/* NOTE */
+.note{font-size:9px;color:#6B7280;margin-top:8px;padding:5px 8px;background:#F9FAFB;border-radius:4px;line-height:1.5;border:1px solid #E2E6EA;}
+.note.purple{border-left:2px solid #6E5FD8;}
+.note.amber{border-left:2px solid #F0A500;}
+.note.red{border-left:2px solid #E05252;}
+.note.teal{border-left:2px solid #1D9E75;}
+
+/* FORECAST NOTE */
+.forecast-box{margin-top:8px;padding:8px 10px;background:rgba(110,95,216,.05);border-radius:4px;border-left:2px solid #6E5FD8;font-size:9px;color:#6E5FD8;line-height:1.6;}
+
+/* TENURE BANDS */
+.tenure-row{display:flex;gap:6px;}
+.tenure-band{flex:1;padding:10px;border-radius:6px;border:1px solid #E2E6EA;background:#F9FAFB;text-align:center;}
+.tenure-band.spike{border-color:rgba(224,82,82,.35);background:rgba(224,82,82,.04);}
+.tenure-band.watch{border-color:rgba(240,165,0,.3);background:rgba(240,165,0,.04);}
+.tb-label{font-size:9px;font-weight:600;color:#9CA3AF;text-transform:uppercase;letter-spacing:.05em;margin-bottom:5px;}
+.tenure-band.spike .tb-label{color:#E05252;}
+.tenure-band.watch .tb-label{color:#C07A00;}
+.tb-value{font-size:18px;font-weight:700;color:#0D1117;}
+.tenure-band.spike .tb-value{color:#E05252;}
+.tenure-band.watch .tb-value{color:#C07A00;}
+.tb-sub{font-size:9px;color:#9CA3AF;margin-top:2px;}
+
+/* REGRETTABLE */
+.regret-box{padding:12px;border-radius:6px;border:1px solid #E2E6EA;text-align:center;background:#F9FAFB;}
+.regret-box.pending{border-color:#E2E6EA;}
+.regret-pending-label{font-size:10px;color:#9CA3AF;margin-bottom:6px;}
+.regret-pending-value{font-size:22px;font-weight:700;color:#9CA3AF;}
+.regret-pending-note{font-size:9px;color:#9CA3AF;margin-top:4px;}
+
+/* DRIVER TAXONOMY */
+.driver-category{margin-bottom:6px;}
+.driver-cat-header{display:flex;align-items:center;justify-content:space-between;padding:7px 10px;background:#F9FAFB;border-radius:4px;cursor:pointer;border:1px solid #E2E6EA;transition:border-color .2s;}
+.driver-cat-header:hover{border-color:#1D9E75;background:#F0FBF7;}
+.driver-cat-name{font-size:11px;font-weight:600;color:#0D1117;}
+.driver-cat-meta{display:flex;align-items:center;gap:8px;}
+.driver-cat-pct{font-size:12px;font-weight:700;font-family:'DM Mono',monospace;}
+.driver-bar-outer{flex:1;height:4px;background:#E2E6EA;border-radius:2px;width:60px;}
+.driver-bar-fill{height:100%;border-radius:2px;}
+.driver-subs{display:none;padding:4px 0;}
+.driver-subs.open{display:block;}
+.driver-sub-item{display:flex;align-items:center;justify-content:space-between;padding:5px 10px;border-radius:3px;font-size:10px;color:#6B7280;}
+.driver-sub-item:hover{background:rgba(29,158,117,.05);color:#0D1117;}
+.driver-sub-count{font-family:'DM Mono',monospace;font-size:10px;color:#9CA3AF;}
+
+/* EXPERIENCE HEAT */
+.exp-heat-wrap{overflow-x:auto;}
+.exp-heat-table{width:100%;border-collapse:collapse;}
+.exp-heat-table th{font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:#9CA3AF;padding:5px 6px;text-align:center;border-bottom:1px solid #E2E6EA;}
+.exp-heat-table th.rh{text-align:left;width:130px;}
+.exp-heat-table td{padding:3px;border:1px solid #F4F6F9;}
+.exp-heat-table td.rl{font-size:10px;font-weight:600;color:#6B7280;padding:6px 8px;border:none;background:transparent;white-space:nowrap;}
+.heat-cell{border-radius:3px;padding:8px 4px;font-size:10px;font-weight:600;text-align:center;cursor:default;transition:transform .15s;}
+.heat-cell:hover{transform:scale(1.08);z-index:1;position:relative;}
+
+/* GRADE GRID */
+.grade-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(72px,1fr));gap:8px;margin-top:4px;}
+.grade-cell{background:#F9FAFB;border:1px solid #E2E6EA;border-radius:6px;padding:10px 8px;text-align:center;transition:all .15s;}
+.grade-cell:hover{border-color:#1D9E75;background:#F0FBF7;}
+.grade-name{font-size:11px;font-weight:600;color:#6B7280;font-family:'DM Mono',monospace;}
+.grade-val{font-size:16px;font-weight:700;color:#0D1117;margin-top:4px;}
+.grade-sub{font-size:9px;color:#9CA3AF;margin-top:2px;}
+.grade-cell.heat-green{border-top:3px solid #10B981;}
+.grade-cell.heat-amber{border-top:3px solid #F59E0B;}
+.grade-cell.heat-red{border-top:3px solid #E05252;}
+
+/* SECTION SUB-LABEL */
+.sub-label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#9CA3AF;margin:12px 0 8px;padding-bottom:5px;border-bottom:1px solid #F0F2F5;}
+
+/* PENDING */
+.pending-section{position:relative;}
+.pending-overlay{position:absolute;inset:0;background:rgba(244,246,249,.8);border-radius:8px;display:flex;align-items:center;justify-content:center;z-index:10;backdrop-filter:blur(2px);}
+.pending-label-big{font-size:11px;font-weight:600;color:#6B7280;text-align:center;padding:8px 16px;border:1px solid #E2E6EA;border-radius:6px;background:#fff;}
+
+/* BENCHMARK BADGE */
+.bmark-badge{display:inline-flex;align-items:center;gap:4px;font-size:9px;font-weight:600;padding:2px 7px;border-radius:3px;background:rgba(59,130,246,.08);color:#2563EB;border:1px solid rgba(59,130,246,.25);white-space:nowrap;}
+.bmark-badge::before{content:'◆';font-size:7px;}
+.bmark-row{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px;}
+
+/* BOTTOM STRIP */
+.bottom-strip{background:#fff;border-top:1px solid #E2E6EA;padding:7px 24px;display:flex;align-items:center;gap:14px;font-size:9px;color:#9CA3AF;flex-wrap:wrap;}
+.strip-item{display:flex;align-items:center;gap:4px;}
+.strip-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0;}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="topbar-left">
+    <span class="logo-chip">Tejas Networks</span>
+    <span class="page-title">Attrition Analysis Dashboard</span>
+  </div>
+  <div class="topbar-right">
+    <span class="chro-badge">CHRO View</span>
+    <span class="phase-tag">FY 2024–25</span>
+    <span class="data-stamp">Apr–Mar · Sample Data</span>
+  </div>
+</div>
+
+<!-- FILTER BAR -->
+<div class="filterbar">
+  <span class="filter-label">Time</span>
+  <select><option>FY 2024–25</option><option>FY 2023–24</option><option>FY 2022–23</option></select>
+  <select><option>All Quarters</option><option>Q1 (Apr–Jun)</option><option>Q2 (Jul–Sep)</option><option>Q3 (Oct–Dec)</option><option>Q4 (Jan–Mar)</option></select>
+  <select><option>All Months</option><option>April</option><option>May</option><option>June</option><option>July</option><option>August</option><option>September</option><option>October</option><option>November</option><option>December</option><option>January</option><option>February</option><option>March</option></select>
+
+  <div class="filter-divider"></div>
+  <span class="filter-label">Workforce</span>
+  <select><option>All Functions</option><option>CTO</option><option>G&A</option><option>NSG</option><option>R&D</option><option>Sales</option><option>SCM</option></select>
+  <select><option>All Sub-Functions</option><option>Sub-Function A</option><option>Sub-Function B</option><option>Sub-Function C</option><option>Sub-Function D</option><option>Sub-Function E</option></select>
+  <select><option>All Person Types</option><option>On Roll</option><option>Off Roll</option><option>Apprentice</option><option>Intern</option></select>
+  <select><option>All Grades</option>
+    <optgroup label="Individual Contributor"><option>I1</option><option>I2</option><option>I3</option><option>I4</option><option>I5</option><option>I6</option><option>I7</option><option>I8</option><option>I9</option><option>I10</option><option>I11</option></optgroup>
+    <optgroup label="Manager"><option>M3</option><option>M4</option><option>M5</option><option>M6</option><option>M7</option><option>M8</option><option>M9</option><option>M10</option><option>M11</option></optgroup>
+  </select>
+  <select><option>All Genders</option><option>Male</option><option>Female</option><option>Not Disclosed</option></select>
+  <select><option>All Locations</option><option>Bengaluru</option><option>Mumbai</option><option>Delhi NCR</option><option>Chennai</option><option>Pune</option></select>
+  <select><option>All Exit Types</option><option>Voluntary</option><option>Involuntary</option></select>
+  <select><option>All Tenure Bands</option><option>0–3 Months</option><option>4–6 Months</option><option>7–9 Months</option><option>10–12 Months</option><option>1 Year+</option></select>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+<!-- ── KPI ROW ── -->
+<div class="kpi-row">
+  <div class="kpi teal">
+    <div class="kpi-label">YTD Attrition</div>
+    <div class="kpi-value teal">14.2%</div>
+    <div class="kpi-sub"><span class="delta up">↑ 1.8%</span></div>
+    <div class="bmark-row">
+      <span class="bmark-badge">Median 15.9% · Aon 2025</span>
+      <span class="bmark-badge" style="color:#1D9E75;border-color:rgba(29,158,117,.3);background:rgba(29,158,117,.06);">Top-5 IT 13.0%</span>
+    </div>
+  </div>
+  <div class="kpi red">
+    <div class="kpi-label">Total Exits</div>
+    <div class="kpi-value red">512</div>
+    <div class="kpi-sub"><span class="delta up">↑ 100</span></div>
+  </div>
+  <div class="kpi teal">
+    <div class="kpi-label">Voluntary Exits</div>
+    <div class="kpi-value teal">387</div>
+    <div class="kpi-sub"><span class="delta neu">76% of total</span></div>
+  </div>
+  <div class="kpi amber">
+    <div class="kpi-label">Avg Tenure at Exit</div>
+    <div class="kpi-value amber">2.4 yrs</div>
+    <div class="kpi-sub"><span class="delta up">↓ 0.3yr</span></div>
+  </div>
+  <div class="kpi purple">
+    <div class="kpi-label">Regrettable Exits</div>
+    <div class="kpi-value purple">61%</div>
+    <div class="kpi-sub"><span class="delta up">↑ 4%</span></div>
+  </div>
+  <div class="kpi red">
+    <div class="kpi-label">Infancy Attrition</div>
+    <div class="kpi-value red">18%</div>
+    <div class="kpi-sub"><span class="delta neu">≤12 months</span></div>
+    <div class="bmark-row">
+      <span class="bmark-badge" style="color:#E05252;border-color:rgba(224,82,82,.3);background:rgba(224,82,82,.06);">India median 35% · SPRF 2025</span>
+    </div>
+  </div>
+  <div class="kpi slate">
+    <div class="kpi-label">Monthly Run Rate</div>
+    <div class="kpi-value dark">42.7</div>
+    <div class="kpi-sub"><span class="delta neu">exits / month</span></div>
+  </div>
+</div>
+
+<!-- ── SECTION 1: TREND ── -->
+<div class="section-header">
+  <span class="section-title">Attrition Trend & Forecast</span>
+  <div class="section-line"></div>
+  <span class="sbadge teal">Oracle OTBI</span>
+</div>
+<div class="grid-2-1">
+  <div class="card">
+    <div class="chart-header">
+      <span class="chart-label">Monthly Attrition % + Headcount · with 2-Month Forecast</span>
+      <div class="time-toggle">
+        <button class="tt-btn active" onclick="switchTrend('monthly',this)">Monthly</button>
+        <button class="tt-btn" onclick="switchTrend('quarterly',this)">Quarterly</button>
+        <button class="tt-btn" onclick="switchTrend('yearly',this)">Yearly</button>
+      </div>
+    </div>
+    <div class="chart-wrap tall"><canvas id="trendChart"></canvas></div>
+    <div class="forecast-box" id="forecastNote">Computing forecast...</div>
+  </div>
+  <div class="card">
+    <div class="chart-header">
+      <span class="chart-label">Year-on-Year Comparison</span>
+      <div class="time-toggle">
+        <button class="tt-btn active" onclick="switchYoY('monthly',this)">Monthly</button>
+        <button class="tt-btn" onclick="switchYoY('quarterly',this)">Quarterly</button>
+      </div>
+    </div>
+    <div class="chart-wrap tall"><canvas id="yoyChart"></canvas></div>
+  </div>
+</div>
+
+<!-- VOL/INVOL + EXIT VOLUME -->
+<div class="grid-2">
+  <div class="card">
+    <div class="card-title">Voluntary vs Involuntary Split</div>
+    <div class="chart-wrap"><canvas id="volInvolChart"></canvas></div>
+  </div>
+  <div class="card">
+    <div class="chart-header">
+      <span class="chart-label">Monthly Exit Volume</span>
+      <div class="time-toggle">
+        <button class="tt-btn active" onclick="switchExitVol('monthly',this)">Monthly</button>
+        <button class="tt-btn" onclick="switchExitVol('quarterly',this)">Quarterly</button>
+        <button class="tt-btn" onclick="switchExitVol('yearly',this)">Yearly</button>
+      </div>
+    </div>
+    <div class="chart-wrap"><canvas id="exitVolChart"></canvas></div>
+  </div>
+</div>
+
+<!-- ── SECTION 2: FUNCTION, GRADE & LOCATION ── -->
+<div class="section-header">
+  <span class="section-title">Function, Grade & Location Analysis</span>
+  <div class="section-line"></div>
+  <span class="sbadge teal">Oracle OTBI</span>
+</div>
+<div class="grid-2">
+  <div class="card">
+    <div class="card-title">Attrition by Function</div>
+    <div class="chart-wrap"><canvas id="functionChart"></canvas></div>
+  </div>
+  <div class="card">
+    <div class="card-title">Attrition by Location</div>
+    <div class="chart-wrap"><canvas id="locationChart"></canvas></div>
+  </div>
+</div>
+
+<!-- GRADE BAR CHART -->
+<div class="card">
+  <div class="chart-header">
+    <span class="chart-label">Attrition % by Grade</span>
+    <div class="time-toggle">
+      <select id="gradeTrackSelect" onchange="switchGradeTrack()" style="font-size:10px;padding:3px 24px 3px 8px;border-radius:3px;border:1px solid #E2E6EA;background:#F9FAFB;color:#0D1117;cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='5'%3E%3Cpath d='M0 0l4 5 4-5z' fill='%236B7280'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 7px center;">
+        <option value="ic">Individual Contributor (I1–I11)</option>
+        <option value="m">Manager (M3–M11)</option>
+      </select>
+    </div>
+  </div>
+  <div class="chart-wrap tall"><canvas id="gradeBarChart"></canvas></div>
+</div>
+
+<!-- ── SECTION 3: GENDER ── -->
+<div class="section-header">
+  <span class="section-title">Gender-wise Attrition</span>
+  <div class="section-line"></div>
+  <span class="sbadge teal">Oracle OTBI</span>
+</div>
+<div class="grid-2">
+  <div class="card">
+    <div class="card-title">Attrition Rate by Gender</div>
+    <div class="chart-wrap"><canvas id="genderChart"></canvas></div>
+  </div>
+  <div class="card">
+    <div class="chart-header">
+      <span class="chart-label">Gender Attrition Trend</span>
+      <div class="time-toggle">
+        <button class="tt-btn active" onclick="switchGenderTrend('monthly',this)">Monthly</button>
+        <button class="tt-btn" onclick="switchGenderTrend('quarterly',this)">Quarterly</button>
+      </div>
+    </div>
+    <div class="chart-wrap"><canvas id="genderTrendChart"></canvas></div>
+  </div>
+</div>
+
+<!-- ── SECTION 4: TENURE & INFANCY ── -->
+<div class="section-header">
+  <span class="section-title">Tenure, Infancy & Experience Analysis</span>
+  <div class="section-line"></div>
+  <span class="sbadge teal">Oracle OTBI</span>
+</div>
+<div class="card" style="margin-bottom:0;">
+  <div class="card-title" style="margin-bottom:10px;">Attrition Velocity by Tenure Cohort</div>
+  <div class="tenure-row">
+    <div class="tenure-band spike"><div class="tb-label">0–3 Months</div><div class="tb-value">8%</div><div class="tb-sub">Early exit signal</div></div>
+    <div class="tenure-band spike"><div class="tb-label">4–6 Months</div><div class="tb-value">10%</div><div class="tb-sub">Onboarding failure</div></div>
+    <div class="tenure-band watch"><div class="tb-label">7–9 Months</div><div class="tb-value">12%</div><div class="tb-sub">Role fit concern</div></div>
+    <div class="tenure-band watch"><div class="tb-label">10–12 Months</div><div class="tb-value">14%</div><div class="tb-sub">Pre-appraisal exit</div></div>
+    <div class="tenure-band"><div class="tb-label">1 Year+</div><div class="tb-value">56%</div><div class="tb-sub">Majority of exits</div></div>
+  </div>
+  <div class="note teal">SHRM (2023): organisations with structured 90-day onboarding see 40% lower infancy attrition. Recommended: stay-interview at Month 6 for all joiners.</div>
+  <div class="note" style="border-left:2px solid #2563EB;margin-top:4px;"><strong style="color:#2563EB;">Benchmark:</strong> India structured-program early attrition median = <strong>35%</strong> (SPRF/NAPS 2025, directional). Tejas at 18% — below median. Monitor 0–6 month cohort closely as headcount grows.</div>
+</div>
+<div class="grid-2" style="margin-top:0;">
+  <div class="card">
+    <div class="card-title">Attrition by Tejas Tenure (Years)</div>
+    <div class="chart-wrap"><canvas id="tejasExpChart"></canvas></div>
+  </div>
+  <div class="card">
+    <div class="card-title">Attrition by Total Experience (Years)</div>
+    <div class="chart-wrap"><canvas id="totalExpChart"></canvas></div>
+  </div>
+</div>
+<div class="card">
+  <div class="card-title" style="margin-bottom:10px;">
+    Heatmap — Function × Tejas Tenure at Exit
+    <div class="time-toggle">
+      <button class="tt-btn active" onclick="switchHeatmap('function',this)">By Function</button>
+      <button class="tt-btn" onclick="switchHeatmap('subfunction',this)">By Sub-Function</button>
+    </div>
+  </div>
+  <div class="exp-heat-wrap"><table class="exp-heat-table" id="expHeatTable"></table></div>
+  <div class="note teal">Darker cells = higher exit concentration. Y-axis: Function (or Sub-Function). X-axis: Tejas tenure band. Identifies which functions lose talent at which tenure stage.</div>
+</div>
+
+<!-- ── SECTION 5: PERFORMANCE ── -->
+<div class="section-header">
+  <span class="section-title">Performance Rating–wise Attrition</span>
+  <div class="section-line"></div>
+  <span class="sbadge purple">Cross-module OTBI</span>
+</div>
+<div class="grid-2">
+  <div class="card">
+    <div class="card-title">Exits by Last Performance Rating (1–5)</div>
+    <div class="chart-wrap"><canvas id="perfRatingChart"></canvas></div>
+    <div class="note purple">Requires OTBI join: Workforce Management + Performance Management. Confirm with Maheshwar that both subject areas are populated.</div>
+  </div>
+  <div class="card">
+    <div class="chart-header">
+      <span class="chart-label">Rating-wise Attrition Trend</span>
+      <div class="time-toggle">
+        <button class="tt-btn active" onclick="switchPerfTrend('monthly',this)">Monthly</button>
+        <button class="tt-btn" onclick="switchPerfTrend('quarterly',this)">Quarterly</button>
+      </div>
+    </div>
+    <div class="chart-wrap"><canvas id="perfTrendChart"></canvas></div>
+  </div>
+</div>
+
+<!-- ── SECTION 6: REGRETTABLE ── -->
+<div class="section-header">
+  <span class="section-title">Regrettable Attrition</span>
+  <div class="section-line"></div>
+  <span class="sbadge amber">Logic Under Definition</span>
+</div>
+<div class="card pending-section">
+  <div class="grid-3">
+    <div class="regret-box pending"><div class="regret-pending-label">Regrettable Exits</div><div class="regret-pending-value">—</div><div class="regret-pending-note">Definition pending</div></div>
+    <div class="regret-box pending"><div class="regret-pending-label">Regrettable Rate</div><div class="regret-pending-value">—%</div><div class="regret-pending-note">Definition pending</div></div>
+    <div class="regret-box pending"><div class="regret-pending-label">Non-Regrettable</div><div class="regret-pending-value">—</div><div class="regret-pending-note">Definition pending</div></div>
+  </div>
+  <div class="pending-overlay"><div class="pending-label-big">⏳ Regrettable Attrition Logic Under Definition · Section will populate once classification criteria is agreed</div></div>
+</div>
+
+<!-- ── SECTION 7: EXIT DRIVERS ── -->
+<div class="section-header">
+  <span class="section-title">Exit Drivers — 33-Bucket Taxonomy</span>
+  <div class="section-line"></div>
+  <span class="sbadge amber">Source: Outside Oracle</span>
+</div>
+<div class="grid-2">
+  <div class="card">
+    <div class="card-title">Exit Driver Distribution</div>
+    <div class="chart-wrap"><canvas id="driverChart"></canvas></div>
+  </div>
+  <div class="card">
+    <div class="card-title">33-Bucket Drill-Down</div>
+    <div id="driverTaxonomy"></div>
+  </div>
+</div>
+
+</div><!-- /main -->
+
+<!-- BOTTOM STRIP -->
+<div class="bottom-strip">
+  <div class="strip-item"><div class="strip-dot" style="background:#1D9E75"></div>Oracle HCM OTBI — Direct pull</div>
+  <div class="strip-item"><div class="strip-dot" style="background:#F0A500"></div>Source: Outside Oracle — Manual / Exit interviews</div>
+  <div class="strip-item"><div class="strip-dot" style="background:#6E5FD8"></div>Cross-module OTBI — Requires join configuration</div>
+  <div class="strip-item"><div class="strip-dot" style="background:#E05252"></div>Pending configuration — Data not yet in Oracle</div>
+  <div class="strip-item" style="margin-left:auto;"><div class="strip-dot" style="background:#9CA3AF"></div>CHRO View · Sample data for wireframe validation · FY 2024–25</div>
+</div>
+
+<script>
+const TEAL='#1D9E75', PURPLE='#6E5FD8', RED='#E05252', AMBER='#F0A500', BLUE='#3B82F6', SLATE='#94A3B8';
+const BD='rgba(0,0,0,.06)';
+const months=['Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec','Jan','Feb','Mar'];
+const qtrs=['Q1 (Apr–Jun)','Q2 (Jul–Sep)','Q3 (Oct–Dec)','Q4 (Jan–Mar)'];
+
+// ── FORECAST ──
+const histAttr=[11.2,12.1,11.8,13.4,14.0,13.2,14.8,15.1,13.9,14.2,14.6,14.2];
+function computeFc(data){
+  const n=data.length;
+  const base=data[n-1]*.5+data[n-2]*.3+data[n-3]*.2;
+  const sl=data.slice(-6);
+  const mean=sl.reduce((a,b)=>a+b)/sl.length;
+  const std=Math.sqrt(sl.map(v=>(v-mean)**2).reduce((a,b)=>a+b)/sl.length);
+  const f1=+(base+(data[n-1]-data[n-2])*.3).toFixed(1);
+  const f2=+(f1+(f1-base)*.4).toFixed(1);
+  return{f1,f2,u1:+(f1+std).toFixed(1),l1:+(f1-std).toFixed(1),u2:+(f2+std).toFixed(1),l2:+(f2-std).toFixed(1)};
+}
+const FC=computeFc(histAttr);
+document.getElementById('forecastNote').innerHTML=
+  `📈 <strong>2-Month Forecast:</strong> Attrition projected at <strong style="color:#6E5FD8">${FC.f1}%</strong> (M+1) and <strong style="color:#6E5FD8">${FC.f2}%</strong> (M+2) on base case. Upper bound: ${FC.u2}% if trend accelerates. Method: weighted 3-month moving average · Confidence band: ±1σ of last 6 months · Shinde (2025): Indian IT context predictive attrition modelling.`;
+
+// ── TREND CHART ──
+
+const trendMonthly={labels:months,datasets:[
+  {label:'Attrition %',data:histAttr.slice(),borderColor:RED,backgroundColor:'rgba(224,82,82,.07)',fill:true,tension:.4,pointRadius:4,pointBackgroundColor:RED,yAxisID:'y'},
+  {label:'Headcount',data:Array.from({length:12},(_,i)=>3200+i*58),borderColor:TEAL,borderDash:[4,3],backgroundColor:'transparent',tension:.4,pointRadius:3,pointBackgroundColor:TEAL,yAxisID:'y1'},
+  {label:'Industry Median (15.9%) · Aon 2025',data:Array(12).fill(15.9),borderColor:'#2563EB',borderDash:[6,3],backgroundColor:'transparent',pointRadius:0,borderWidth:1.5,yAxisID:'y'},
+  {label:'Top-5 IT Firms (13.0%) · Aon 2025',data:Array(12).fill(13.0),borderColor:'#1D9E75',borderDash:[3,3],backgroundColor:'transparent',pointRadius:0,borderWidth:1.5,yAxisID:'y'}
+]};
+const trendQtrly={labels:qtrs,datasets:[
+  {label:'Attrition %',data:[11.7,13.5,14.7,13.0],borderColor:RED,backgroundColor:'rgba(224,82,82,.07)',fill:true,tension:.4,pointRadius:5,pointBackgroundColor:RED,yAxisID:'y'},
+  {label:'Headcount',data:[3210,3684,3750,3898],borderColor:TEAL,borderDash:[4,3],backgroundColor:'transparent',tension:.4,pointRadius:4,pointBackgroundColor:TEAL,yAxisID:'y1'},
+  {label:'Industry Median (15.9%) · Aon 2025',data:Array(4).fill(15.9),borderColor:'#2563EB',borderDash:[6,3],backgroundColor:'transparent',pointRadius:0,borderWidth:1.5,yAxisID:'y'},
+  {label:'Top-5 IT Firms (13.0%) · Aon 2025',data:Array(4).fill(13.0),borderColor:'#1D9E75',borderDash:[3,3],backgroundColor:'transparent',pointRadius:0,borderWidth:1.5,yAxisID:'y'}
+]};
+const trendYearly={labels:['FY22–23','FY23–24','FY24–25'],datasets:[
+  {label:'Attrition %',data:[11.8,12.4,14.2],borderColor:RED,backgroundColor:'rgba(224,82,82,.07)',fill:true,tension:.4,pointRadius:5,pointBackgroundColor:RED,yAxisID:'y'},
+  {label:'Headcount',data:[3210,3684,3898],borderColor:TEAL,borderDash:[4,3],backgroundColor:'transparent',tension:.4,pointRadius:4,pointBackgroundColor:TEAL,yAxisID:'y1'},
+  {label:'Industry Median (15.9%) · Aon 2025',data:Array(3).fill(15.9),borderColor:'#2563EB',borderDash:[6,3],backgroundColor:'transparent',pointRadius:0,borderWidth:1.5,yAxisID:'y'},
+  {label:'Top-5 IT Firms (13.0%) · Aon 2025',data:Array(3).fill(13.0),borderColor:'#1D9E75',borderDash:[3,3],backgroundColor:'transparent',pointRadius:0,borderWidth:1.5,yAxisID:'y'}
+]};
+const trendOpts={responsive:true,maintainAspectRatio:true,interaction:{mode:'index',intersect:false},plugins:{legend:{position:'bottom',labels:{boxWidth:10,padding:10,font:{family:'DM Sans',size:10},color:'#6B7280'}}},scales:{x:{grid:{color:BD},ticks:{font:{family:'DM Mono',size:9},color:'#9CA3AF'}},y:{grid:{color:BD},ticks:{callback:v=>v+'%',font:{family:'DM Sans',size:10},color:'#9CA3AF'},title:{display:true,text:'Attrition %',color:'#9CA3AF',font:{size:9}}},y1:{position:'right',grid:{display:false},ticks:{callback:v=>v.toLocaleString(),font:{family:'DM Sans',size:10},color:'#9CA3AF'},title:{display:true,text:'Headcount',color:'#9CA3AF',font:{size:9}}}}};
+const trendChart=new Chart(document.getElementById('trendChart'),{type:'line',data:JSON.parse(JSON.stringify(trendMonthly)),options:JSON.parse(JSON.stringify(trendOpts))});
+function switchTrend(type,btn){
+  btn.closest('.time-toggle').querySelectorAll('.tt-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');
+  trendChart.data=JSON.parse(JSON.stringify(type==='monthly'?trendMonthly:type==='quarterly'?trendQtrly:trendYearly));trendChart.update();
+}
+
+// ── YOY ──
+const yoyMonthly={labels:months,datasets:[
+  {label:'FY24–25',data:[1.1,1.3,1.0,1.4,1.2,1.6,1.3,1.1,1.4,1.2,1.5,1.1],borderColor:RED,backgroundColor:'transparent',tension:.4,pointRadius:2},
+  {label:'FY23–24',data:[0.9,1.1,0.8,1.2,1.0,1.3,1.1,0.9,1.2,1.0,1.3,0.9],borderColor:AMBER,backgroundColor:'transparent',tension:.4,pointRadius:2,borderDash:[4,3]},
+  {label:'FY22–23',data:[0.8,1.0,0.7,1.1,0.9,1.2,1.0,0.8,1.1,0.9,1.1,0.8],borderColor:TEAL,backgroundColor:'transparent',tension:.4,pointRadius:2,borderDash:[2,4]}
+]};
+const yoyQtrly={labels:qtrs,datasets:[
+  {label:'FY24–25',data:[3.4,4.1,3.7,3.6],borderColor:RED,backgroundColor:'transparent',tension:.4,pointRadius:4},
+  {label:'FY23–24',data:[2.8,3.4,3.1,3.0],borderColor:AMBER,backgroundColor:'transparent',tension:.4,pointRadius:4,borderDash:[4,3]},
+  {label:'FY22–23',data:[2.5,3.0,2.8,2.7],borderColor:TEAL,backgroundColor:'transparent',tension:.4,pointRadius:4,borderDash:[2,4]}
+]};
+const yoyChart=new Chart(document.getElementById('yoyChart'),{type:'line',data:JSON.parse(JSON.stringify(yoyMonthly)),options:{responsive:true,maintainAspectRatio:true,plugins:{legend:{position:'bottom',labels:{boxWidth:10,padding:10,font:{family:'DM Sans',size:10},color:'#6B7280'}}},scales:{x:{grid:{color:BD},ticks:{font:{family:'DM Mono',size:9},color:'#9CA3AF'}},y:{grid:{color:BD},ticks:{callback:v=>v+'%',font:{family:'DM Sans',size:10},color:'#9CA3AF'}}}}});
+function switchYoY(type,btn){
+  btn.closest('.time-toggle').querySelectorAll('.tt-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');
+  yoyChart.data=JSON.parse(JSON.stringify(type==='monthly'?yoyMonthly:yoyQtrly));yoyChart.update();
+}
+
+// ── VOL/INVOL PIE ──
+new Chart(document.getElementById('volInvolChart'),{type:'pie',data:{labels:['Voluntary','Involuntary'],datasets:[{data:[387,125],backgroundColor:[TEAL,RED],borderColor:'#fff',borderWidth:3}]},options:{responsive:true,maintainAspectRatio:true,plugins:{legend:{position:'bottom',labels:{boxWidth:10,padding:10,font:{family:'DM Sans',size:10},color:'#6B7280'}}}}});
+
+// ── EXIT VOL BAR ──
+const evMonthly={labels:months,datasets:[{label:'Exits',data:[48,38,44,42,36,52,44,34,40,48,38,48],backgroundColor:RED+'66',borderRadius:3}]};
+const evQtrly={labels:qtrs,datasets:[{label:'Exits',data:[130,130,122,130],backgroundColor:RED+'66',borderRadius:3}]};
+const evYearly={labels:['FY22–23','FY23–24','FY24–25'],datasets:[{label:'Exits',data:[380,412,512],backgroundColor:RED+'66',borderRadius:3}]};
+const evChart=new Chart(document.getElementById('exitVolChart'),{type:'bar',data:JSON.parse(JSON.stringify(evMonthly)),options:{responsive:true,maintainAspectRatio:true,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{font:{family:'DM Mono',size:9},color:'#9CA3AF'}},y:{grid:{color:BD},ticks:{font:{family:'DM Sans',size:10},color:'#9CA3AF'}}}}});
+function switchExitVol(type,btn){
+  btn.closest('.time-toggle').querySelectorAll('.tt-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');
+  evChart.data=JSON.parse(JSON.stringify(type==='monthly'?evMonthly:type==='quarterly'?evQtrly:evYearly));evChart.update();
+}
+
+// ── FUNCTION BAR ──
+new Chart(document.getElementById('functionChart'),{type:'bar',data:{labels:['CTO','G&A','NSG','R&D','Sales','SCM'],datasets:[{label:'Attrition %',data:[16.2,11.4,13.8,11.4,19.6,10.2],backgroundColor:[AMBER,TEAL,AMBER,TEAL,RED,TEAL],borderRadius:4}]},options:{responsive:true,maintainAspectRatio:true,indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{grid:{color:BD},ticks:{callback:v=>v+'%',font:{family:'DM Sans',size:10},color:'#9CA3AF'}},y:{grid:{display:false},ticks:{font:{family:'DM Sans',size:11},color:'#6B7280'}}}}});
+
+// ── LOCATION BAR ──
+new Chart(document.getElementById('locationChart'),{type:'bar',data:{labels:['Bengaluru','Mumbai','Delhi','Chennai','Pune'],datasets:[{label:'Attrition %',data:[15.8,13.2,16.4,11.6,9.4],backgroundColor:[RED,AMBER,RED,TEAL,TEAL],borderRadius:4}]},options:{responsive:true,maintainAspectRatio:true,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{font:{family:'DM Mono',size:10},color:'#9CA3AF'}},y:{grid:{color:BD},ticks:{callback:v=>v+'%',font:{family:'DM Sans',size:10},color:'#9CA3AF'}}}}});
+
+// ── GRADE BAR CHART ──
+const icG=['I1','I2','I3','I4','I5','I6','I7','I8','I9','I10','I11'];
+const icR=[6.1,8.3,12.4,19.2,22.1,18.7,14.3,11.2,9.8,7.4,5.2];
+const mG=['M3','M4','M5','M6','M7','M8','M9','M10','M11'];
+const mR=[14.1,16.8,13.2,10.4,8.7,7.1,5.9,4.2,2.1];
+
+const gradeChartCtx=document.getElementById('gradeBarChart').getContext('2d');
+const gradeBarChart=new Chart(gradeChartCtx,{
+  type:'bar',
+  data:{
+    labels:icG,
+    datasets:[{
+      label:'Attrition %',
+      data:icR,
+      backgroundColor:icR.map(v=>v>=18?RED:v>=12?AMBER:TEAL),
+      borderRadius:4,borderSkipped:false
+    }]
+  },
+  options:{
+    responsive:true,maintainAspectRatio:true,
+    plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.parsed.y}% attrition`}}},
+    scales:{
+      x:{grid:{display:false},ticks:{font:{family:'DM Mono',size:10},color:'#6B7280'}},
+      y:{grid:{color:BD},ticks:{callback:v=>v+'%',font:{family:'DM Sans',size:10},color:'#9CA3AF'},max:28}
+    }
+  }
+});
+
+function switchGradeTrack(){
+  const val=document.getElementById('gradeTrackSelect').value;
+  const labels=val==='ic'?icG:mG;
+  const data=val==='ic'?icR:mR;
+  gradeBarChart.data.labels=labels;
+  gradeBarChart.data.datasets[0].data=data;
+  gradeBarChart.data.datasets[0].backgroundColor=data.map(v=>v>=18?RED:v>=12?AMBER:TEAL);
+  gradeBarChart.update();
+}
+
+// ── GENDER ──
+new Chart(document.getElementById('genderChart'),{type:'bar',data:{labels:['Male','Female','Not Disclosed'],datasets:[{label:'Attrition %',data:[13.8,16.2,9.4],backgroundColor:[TEAL,PURPLE,SLATE],borderRadius:4}]},options:{responsive:true,maintainAspectRatio:true,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{font:{family:'DM Sans',size:11},color:'#6B7280'}},y:{grid:{color:BD},ticks:{callback:v=>v+'%',font:{family:'DM Sans',size:10},color:'#9CA3AF'}}}}});
+const gtM={labels:months,datasets:[
+  {label:'Male',data:[1.0,1.2,0.9,1.3,1.1,1.5,1.2,1.0,1.3,1.1,1.4,1.0],borderColor:TEAL,backgroundColor:'transparent',tension:.4,pointRadius:2},
+  {label:'Female',data:[1.3,1.5,1.2,1.6,1.4,1.8,1.5,1.2,1.6,1.4,1.7,1.3],borderColor:PURPLE,backgroundColor:'transparent',tension:.4,pointRadius:2,borderDash:[4,3]}
+]};
+const gtQ={labels:qtrs,datasets:[
+  {label:'Male',data:[3.1,3.8,3.4,3.3],borderColor:TEAL,backgroundColor:'transparent',tension:.4,pointRadius:3},
+  {label:'Female',data:[4.0,4.8,4.3,4.1],borderColor:PURPLE,backgroundColor:'transparent',tension:.4,pointRadius:3,borderDash:[4,3]}
+]};
+const gTC=new Chart(document.getElementById('genderTrendChart'),{type:'line',data:JSON.parse(JSON.stringify(gtM)),options:{responsive:true,maintainAspectRatio:true,plugins:{legend:{position:'bottom',labels:{boxWidth:10,padding:10,font:{family:'DM Sans',size:10},color:'#6B7280'}}},scales:{x:{grid:{color:BD},ticks:{font:{family:'DM Mono',size:9},color:'#9CA3AF'}},y:{grid:{color:BD},ticks:{callback:v=>v+'%',font:{family:'DM Sans',size:10},color:'#9CA3AF'}}}}});
+function switchGenderTrend(type,btn){
+  btn.closest('.time-toggle').querySelectorAll('.tt-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');
+  gTC.data=JSON.parse(JSON.stringify(type==='monthly'?gtM:gtQ));gTC.update();
+}
+
+// ── TENURE CHARTS ──
+new Chart(document.getElementById('tejasExpChart'),{type:'bar',data:{labels:['<1yr','1–2yr','2–3yr','3–5yr','5–7yr','7–10yr','10yr+'],datasets:[{label:'Exits',data:[92,124,98,86,64,32,16],backgroundColor:[RED,RED,AMBER,AMBER,TEAL,TEAL,TEAL+'99'],borderRadius:3}]},options:{responsive:true,maintainAspectRatio:true,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{font:{family:'DM Sans',size:10},color:'#6B7280'}},y:{grid:{color:BD},ticks:{font:{family:'DM Sans',size:10},color:'#9CA3AF'}}}}});
+new Chart(document.getElementById('totalExpChart'),{type:'bar',data:{labels:['0–2yr','3–5yr','6–10yr','11–15yr','15yr+'],datasets:[{label:'Exits',data:[86,148,162,72,44],backgroundColor:[AMBER,RED,RED,AMBER,TEAL],borderRadius:3}]},options:{responsive:true,maintainAspectRatio:true,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{font:{family:'DM Sans',size:10},color:'#6B7280'}},y:{grid:{color:BD},ticks:{font:{family:'DM Sans',size:10},color:'#9CA3AF'}}}}});
+
+// ── FUNCTION × TENURE HEATMAP ──
+const tenureCols=['<1yr','1–2yr','2–3yr','3–5yr','5yr+'];
+const funcRows=['CTO','G&A','NSG','R&D','Sales','SCM'];
+const subfuncRows=['Optical Networks','IP Platforms','ASIC Design','Product Mgmt','Solutions Eng','Support & Svcs','Finance Ops','HR & Admin'];
+// Data: rows = functions, cols = tenure bands
+const heatFuncData=[
+  [4,6,8,5,3],   // CTO
+  [3,5,6,4,2],   // G&A
+  [6,9,11,7,4],  // NSG
+  [12,18,22,14,8], // R&D
+  [8,14,16,10,5],  // Sales
+  [3,5,7,4,2]    // SCM
+];
+const heatSubData=[
+  [3,5,7,4,2],[2,4,5,3,1],[4,7,9,6,3],[3,5,6,4,2],
+  [5,8,10,6,3],[3,6,7,4,2],[2,3,4,3,1],[2,3,4,2,1]
+];
+
+function buildHeatmap(rows, data){
+  const ht=document.getElementById('expHeatTable');
+  ht.innerHTML='';
+  const maxH=Math.max(...data.flat());
+  const thead=ht.createTHead();const hr=thead.insertRow();
+  const c0=document.createElement('th');c0.className='rh';c0.textContent='';hr.appendChild(c0);
+  tenureCols.forEach(t=>{const th=document.createElement('th');th.textContent=t;hr.appendChild(th);});
+  const tbody=ht.createTBody();
+  rows.forEach((row,ri)=>{
+    const tr=tbody.insertRow();const rl=tr.insertCell();rl.className='rl';rl.textContent=row;
+    data[ri].forEach(val=>{
+      const td=tr.insertCell();const intensity=val/maxH;const alpha=0.15+intensity*.8;
+      const color=intensity>.6?RED:intensity>.35?AMBER:TEAL;
+      td.innerHTML=`<div class="heat-cell" style="background:${color};opacity:${alpha};color:#fff;min-width:52px;min-height:36px;">${val}</div>`;
+    });
+  });
+}
+buildHeatmap(funcRows,heatFuncData);
+function switchHeatmap(type,btn){
+  btn.closest('.time-toggle').querySelectorAll('.tt-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  if(type==='function') buildHeatmap(funcRows,heatFuncData);
+  else buildHeatmap(subfuncRows,heatSubData);
+}
+
+// ── PERFORMANCE ──
+new Chart(document.getElementById('perfRatingChart'),{type:'bar',data:{labels:['Rating 1','Rating 2','Rating 3','Rating 4','Rating 5'],datasets:[{label:'Exits',data:[48,82,167,142,73],backgroundColor:[TEAL,TEAL,AMBER,PURPLE,PURPLE],borderRadius:3}]},options:{responsive:true,maintainAspectRatio:true,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{font:{family:'DM Sans',size:10},color:'#6B7280'}},y:{grid:{color:BD},ticks:{font:{family:'DM Sans',size:10},color:'#9CA3AF'}}}}});
+const ptM={labels:months,datasets:[
+  {label:'Rating 4–5',data:[16,19,14,22,17,24,18,13,20,16,23,13],borderColor:PURPLE,backgroundColor:'transparent',tension:.4,pointRadius:2},
+  {label:'Rating 1–2',data:[8,10,7,12,9,14,10,7,11,8,12,7],borderColor:TEAL,backgroundColor:'transparent',tension:.4,pointRadius:2,borderDash:[4,3]}
+]};
+const ptQ={labels:qtrs,datasets:[
+  {label:'Rating 4–5',data:[49,63,51,52],borderColor:PURPLE,backgroundColor:'transparent',tension:.4,pointRadius:3},
+  {label:'Rating 1–2',data:[25,35,28,27],borderColor:TEAL,backgroundColor:'transparent',tension:.4,pointRadius:3,borderDash:[4,3]}
+]};
+const ptC=new Chart(document.getElementById('perfTrendChart'),{type:'line',data:JSON.parse(JSON.stringify(ptM)),options:{responsive:true,maintainAspectRatio:true,plugins:{legend:{position:'bottom',labels:{boxWidth:10,padding:10,font:{family:'DM Sans',size:10},color:'#6B7280'}}},scales:{x:{grid:{color:BD},ticks:{font:{family:'DM Mono',size:9},color:'#9CA3AF'}},y:{grid:{color:BD},ticks:{font:{family:'DM Sans',size:10},color:'#9CA3AF'}}}}});
+function switchPerfTrend(type,btn){
+  btn.closest('.time-toggle').querySelectorAll('.tt-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');
+  ptC.data=JSON.parse(JSON.stringify(type==='monthly'?ptM:ptQ));ptC.update();
+}
+
+// ── EXIT DRIVERS BAR (not pie/doughnut) ──
+new Chart(document.getElementById('driverChart'),{type:'bar',data:{labels:['Compensation','Career Growth','Manager & Team','External Pull','Culture & Env','Personal','Contract End','Non-Voluntary'],datasets:[{label:'% of Exits',data:[22,19,15,14,12,8,6,4],backgroundColor:[RED,PURPLE,AMBER,BLUE,TEAL,'#EC4899',SLATE,'#6B7280'],borderRadius:4,borderSkipped:false}]},options:{responsive:true,maintainAspectRatio:true,indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{grid:{color:BD},ticks:{callback:v=>v+'%',font:{family:'DM Sans',size:10},color:'#9CA3AF'}},y:{grid:{display:false},ticks:{font:{family:'DM Sans',size:11},color:'#6B7280'}}}}});
+
+// ── DRIVER TAXONOMY ──
+const taxonomy=[
+  {cat:'Compensation & Total Rewards',pct:22,color:RED,subs:['Base pay below market','Variable pay dissatisfaction','Benefits inadequacy','Equity / ESOP expectations unmet']},
+  {cat:'Career Growth & Role Clarity',pct:19,color:PURPLE,subs:['No visible promotion path','Role scope stagnant','Unclear performance criteria','Skills going underutilised','Mismatch in roles and responsibilities']},
+  {cat:'Manager & Team Relationship',pct:15,color:AMBER,subs:['Manager behaviour / style','Lack of recognition','Team conflict','Psychological safety concerns']},
+  {cat:'External Opportunity Pull',pct:14,color:BLUE,subs:['Better compensation offered','Better role / title elsewhere','Industry / domain switch','Entrepreneurship / self-employment']},
+  {cat:'Culture & Work Environment',pct:12,color:TEAL,subs:['Work-life balance / workload','Org values misalignment','DEI or inclusion concerns','Physical / remote work setup']},
+  {cat:'Personal & Life Circumstance',pct:8,color:'#EC4899',subs:['Relocation / city move','Family or health obligation','Higher education pursuit','Retirement (voluntary)']},
+  {cat:'Contract / Tenure End',pct:6,color:SLATE,subs:['Internship / contract concluded','Conversion offered but declined','Conversion not offered']},
+  {cat:'Non-Voluntary Separation',pct:4,color:'#6B7280',subs:['Death','Absconding','PIP exit','Retirement — org-initiated','Group transfer']}
+];
+const dtc=document.getElementById('driverTaxonomy');
+taxonomy.forEach((t,i)=>{
+  const div=document.createElement('div');div.className='driver-category';
+  div.innerHTML=`<div class="driver-cat-header" onclick="toggleDriver(${i})"><span class="driver-cat-name">${t.cat}</span><div class="driver-cat-meta"><div class="driver-bar-outer"><div class="driver-bar-fill" style="width:${t.pct*4}%;background:${t.color}"></div></div><span class="driver-cat-pct" style="color:${t.color}">${t.pct}%</span></div></div><div class="driver-subs" id="subs-${i}">${t.subs.map(s=>`<div class="driver-sub-item"><span>${s}</span><span class="driver-sub-count">${Math.floor(Math.random()*20+5)}</span></div>`).join('')}</div>`;
+  dtc.appendChild(div);
+});
+function toggleDriver(i){document.getElementById('subs-'+i).classList.toggle('open');}
+</script>
+</body>
+</html>

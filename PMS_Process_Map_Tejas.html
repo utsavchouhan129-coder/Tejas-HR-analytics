@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PMS Process Map — Tejas Networks</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #F6F8FA;
+  --bg2: #FFFFFF;
+  --bg3: #F0F2F5;
+  --bg4: #E4E8EE;
+  --border: #D0D7DE;
+  --teal: #0D6B52;
+  --teal-dim: #D4EFE7;
+  --teal-glow: rgba(13,107,82,0.08);
+  --purple: #4A3FC0;
+  --purple-dim: #E8E6F8;
+  --purple-glow: rgba(74,63,192,0.08);
+  --amber: #8A6100;
+  --amber-dim: #FEF3C2;
+  --red: #C0252A;
+  --red-dim: #FDEAEA;
+  --red-glow: rgba(192,37,42,0.06);
+  --text: #1A1F26;
+  --text2: #424A53;
+  --text3: #8C959F;
+  --m1: #C0252A;
+  --m2: #8A6100;
+  --m3: #0D6B52;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  line-height: 1.5;
+  padding: 40px 32px 80px;
+  min-width: 900px;
+}
+
+/* ── HEADER ── */
+.doc-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 48px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--border);
+}
+.doc-eyebrow {
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: #0F6E56;
+  margin-bottom: 6px;
+}
+.doc-title {
+  font-size: 26px;
+  font-weight: 600;
+  color: var(--text);
+  letter-spacing: -.02em;
+}
+.doc-subtitle {
+  font-size: 13px;
+  color: var(--text2);
+  margin-top: 4px;
+}
+.doc-meta {
+  text-align: right;
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: var(--text3);
+  line-height: 1.8;
+}
+
+/* ── LEGEND ── */
+.legend {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 36px;
+  padding: 12px 16px;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 11px;
+  color: var(--text2);
+}
+.legend-dot {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: 600;
+  font-family: 'DM Mono', monospace;
+  flex-shrink: 0;
+}
+.legend-sep { width: 1px; height: 20px; background: var(--border); }
+
+/* ── SECTION ── */
+.section { margin-bottom: 40px; }
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 16px;
+  padding: 14px 18px;
+  border-radius: 10px;
+  border-left: 3px solid var(--sec-color);
+  background: var(--bg2);
+}
+.section-id {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--sec-color);
+  letter-spacing: .06em;
+}
+.section-name {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+  flex: 1;
+}
+.section-score {
+  font-family: 'DM Mono', monospace;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 4px 12px;
+  border-radius: 20px;
+  border: 1px solid var(--sec-color);
+  color: var(--sec-color);
+}
+.section-gaps {
+  font-size: 11px;
+  color: var(--red);
+  padding: 3px 10px;
+  background: var(--red-glow);
+  border-radius: 20px;
+}
+
+/* ── STEPS ── */
+.steps { display: flex; flex-direction: column; gap: 0; }
+.step-wrap { display: flex; gap: 0; align-items: stretch; }
+.step-spine {
+  width: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-shrink: 0;
+}
+.step-dot {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  font-weight: 600;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 2;
+  margin-top: 14px;
+}
+.step-line {
+  width: 1px;
+  flex: 1;
+  background: var(--border);
+  margin: 4px 0;
+}
+.step-line-end { background: transparent; }
+
+.step-card {
+  flex: 1;
+  margin: 8px 0 8px 0;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  overflow: hidden;
+  transition: border-color .2s;
+}
+.step-card:hover { border-color: var(--text3); }
+
+/* card top */
+.step-top {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  background: var(--bg3);
+  border-bottom: 1px solid var(--border);
+}
+.step-num-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--text3);
+}
+.step-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  flex: 1;
+}
+.maturity-badge {
+  font-size: 10px;
+  font-weight: 500;
+  padding: 2px 9px;
+  border-radius: 20px;
+  font-family: 'DM Mono', monospace;
+  white-space: nowrap;
+}
+.sev-badge {
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 4px;
+  letter-spacing: .04em;
+  font-family: 'DM Mono', monospace;
+}
+.sev-H { background: #FDEAEA; color: #C0252A; }
+.sev-M { background: #FEF3C2; color: #8A6100; }
+.sev-L { background: #D4EFE7; color: #0D6B52; }
+
+.m1-badge { background: #FDEAEA; color: #C0252A; }
+.m2-badge { background: #FEF3C2; color: #8A6100; }
+.m3-badge { background: #D4EFE7; color: #0D6B52; }
+
+.m1-dot { background: #FDEAEA; color: #C0252A; border: 1.5px solid #C0252A; }
+.m2-dot { background: #FEF3C2; color: #8A6100; border: 1.5px solid #C08000; }
+.m3-dot { background: #D4EFE7; color: #0D6B52; border: 1.5px solid #0D6B52; }
+
+/* card body */
+.step-body { display: flex; flex-direction: column; }
+.row {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 9px 14px;
+  border-bottom: 1px solid var(--border);
+}
+.row:last-child { border-bottom: none; }
+.row-label {
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  min-width: 68px;
+  padding-top: 1px;
+  flex-shrink: 0;
+}
+.row-text {
+  font-size: 12px;
+  color: var(--text2);
+  line-height: 1.55;
+}
+.row-text strong { color: var(--text); font-weight: 500; }
+
+.row-state .row-label { color: #1860C4; }
+.row-gap   .row-label { color: #C0252A; }
+.row-fix   .row-label { color: #0D6B52; }
+.row-quote .row-label { color: #8C959F; }
+.row-quote .row-text  { font-style: italic; color: #8C959F; font-size: 11px; }
+
+.row-state { background: #F0F7FF; }
+.row-gap   { background: #FFF8F8; }
+.row-fix   { background: #F0FAF6; }
+.row-quote { background: #FAFAFA; }
+
+/* critical card highlight */
+.critical-card { border-color: #C0252A; }
+.critical-card .step-top { background: #FFF8F8; }
+
+/* ── SUMMARY ── */
+.summary {
+  margin-top: 48px;
+  padding-top: 32px;
+  border-top: 1px solid var(--border);
+}
+.summary-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 16px;
+}
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 12px;
+  margin-bottom: 20px;
+}
+.summary-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px;
+}
+.s-id   { font-size: 10px; color: var(--text3); font-family: 'DM Mono', monospace; margin-bottom: 4px; }
+.s-name { font-size: 11px; font-weight: 500; color: var(--text2); margin-bottom: 10px; line-height: 1.4; }
+.s-score { font-size: 22px; font-weight: 600; font-family: 'DM Mono', monospace; margin-bottom: 8px; }
+.s-bar-bg { height: 4px; background: var(--bg4); border-radius: 2px; overflow: hidden; margin-bottom: 8px; }
+.s-bar  { height: 100%; border-radius: 2px; }
+.s-gaps { font-size: 10px; }
+.s-gaps span { color: var(--red); font-weight: 500; }
+
+.overall-box {
+  background: var(--bg2);
+  border: 1px solid #0F6E56;
+  border-radius: 10px;
+  padding: 18px 22px;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+.overall-score-big {
+  font-size: 36px;
+  font-weight: 600;
+  font-family: 'DM Mono', monospace;
+  color: #0F6E56;
+  flex-shrink: 0;
+}
+.overall-label { font-size: 11px; color: var(--text3); margin-bottom: 4px; text-transform: uppercase; letter-spacing: .08em; }
+.overall-desc  { font-size: 12px; color: var(--text2); line-height: 1.6; }
+.overall-insight { margin-top: 6px; font-size: 12px; color: #0D6B52; font-weight: 500; }
+</style>
+</head>
+<body>
+
+<div class="doc-header">
+  <div class="doc-header-left">
+    <div class="doc-eyebrow">D1 Diagnostic · APQC Process Maturity · PMS</div>
+    <div class="doc-title">Performance Management — Process Map</div>
+    <div class="doc-subtitle">Step-level current state, bottlenecks, and recommendations · Tejas Networks</div>
+  </div>
+  <div class="doc-meta">
+    TAS Internship 2026<br>
+    Utsav Chouhan<br>
+    15 sub-processes assessed<br>
+    Overall: 1.7 / 3.0
+  </div>
+</div>
+
+<div class="legend">
+  <div class="legend-item">
+    <div class="legend-dot m1-dot">1</div>
+    Level 1 — Manual
+  </div>
+  <div class="legend-item">
+    <div class="legend-dot m2-dot">2</div>
+    Level 2 — Partial
+  </div>
+  <div class="legend-item">
+    <div class="legend-dot m3-dot">3</div>
+    Level 3 — Integrated
+  </div>
+  <div class="legend-sep"></div>
+  <div class="legend-item">
+    <div class="sev-badge sev-H">H</div>
+    High gap — direct business cost
+  </div>
+  <div class="legend-item">
+    <div class="sev-badge sev-M">M</div>
+    Medium — workarounds exist
+  </div>
+  <div class="legend-item">
+    <div class="sev-badge sev-L">L</div>
+    Low — minor inconvenience
+  </div>
+</div>
+
+<div id="root"></div>
+
+<div class="summary">
+  <div class="summary-title">PMS maturity summary</div>
+  <div class="summary-grid">
+    <div class="summary-card">
+      <div class="s-id">7.1</div>
+      <div class="s-name">Goal Setting</div>
+      <div class="s-score" style="color:#8A6100">2.0</div>
+      <div class="s-bar-bg"><div class="s-bar" style="width:67%;background:#8A6100"></div></div>
+      <div class="s-gaps">0 high gaps · <span>no org cascade</span></div>
+    </div>
+    <div class="summary-card">
+      <div class="s-id">7.2</div>
+      <div class="s-name">Mid-Year Review</div>
+      <div class="s-score" style="color:#C0292D">1.5</div>
+      <div class="s-bar-bg"><div class="s-bar" style="width:50%;background:#C0292D"></div></div>
+      <div class="s-gaps">0 high gaps · <span>no formal check-in</span></div>
+    </div>
+    <div class="summary-card">
+      <div class="s-id">7.3</div>
+      <div class="s-name">Annual Appraisal</div>
+      <div class="s-score" style="color:#8A6100">2.5</div>
+      <div class="s-bar-bg"><div class="s-bar" style="width:83%;background:#8A6100"></div></div>
+      <div class="s-gaps"><span>1 high gap</span> · calibration in Excel</div>
+    </div>
+    <div class="summary-card">
+      <div class="s-id">7.4</div>
+      <div class="s-name">Promotion &amp; Increment</div>
+      <div class="s-score" style="color:#C0292D">1.3</div>
+      <div class="s-bar-bg"><div class="s-bar" style="width:43%;background:#C0292D"></div></div>
+      <div class="s-gaps"><span>2 high gaps</span> · all manual sheets</div>
+    </div>
+    <div class="summary-card">
+      <div class="s-id">7.5</div>
+      <div class="s-name">PMS Analytics</div>
+      <div class="s-score" style="color:#C0292D">1.3</div>
+      <div class="s-bar-bg"><div class="s-bar" style="width:43%;background:#C0292D"></div></div>
+      <div class="s-gaps"><span>3 high gaps</span> · zero dashboards</div>
+    </div>
+  </div>
+  <div class="overall-box">
+    <div>
+      <div class="overall-label">Overall PMS score</div>
+      <div class="overall-score-big">1.7 <span style="font-size:16px;color:var(--text2)">/ 3.0</span></div>
+    </div>
+    <div style="flex:1">
+      <div class="overall-desc">The appraisal core is genuinely strong — self-assessment and manager rating both run end-to-end in Oracle at Level 3. The system breaks in two places: HOD calibration runs entirely in Excel (calibration module inactive), and all four analytics sub-processes are at Level 1 despite ratings existing in Oracle post-upload. Activating the Oracle Talent Review module is the single biggest PMS unlock. Building the rating distribution OTBI report is the fastest win — zero config change required.</div>
+      <div class="overall-insight">→ 7.5.2 (performance vs attrition cross-tab) is the data foundation for the Flight Risk Model — prerequisite-gated on VT Workflow activation (EXIT) and calibration module activation (PMS)</div>
+    </div>
+  </div>
+</div>
+
+<script>
+const data = [
+  {
+    id: "7.1", name: "Manage Goal Setting",
+    color: "#6E5FD8", score: "2.0", highGaps: 0,
+    steps: [
+      {
+        id: "7.1.1", name: "Define and cascade organisational goals", maturity: 2, sev: "M",
+        state: "Goal setting is done in Oracle. No business-level goals exist — only individual goals. Org-level cascade is not configured. Manager approves individual goals in Oracle.",
+        gap: "No top-down goal framework. Employees set goals in isolation without a company strategy anchor. Individual goals are unmoored from business objectives.",
+        fix: "Activate org-level goal cascade in Oracle Goal Management. Define 3–5 company-level objectives per review cycle to cascade downward. Low configuration effort — high strategic visibility gain.",
+        quote: "Goal setting is done in Oracle. No business goals — it's called individual goals. Then manager approves in Oracle."
+      },
+      {
+        id: "7.1.2", name: "Set individual employee goals / KRAs", maturity: 2, sev: "L",
+        state: "Employee sets individual goals in Oracle. Manager reviews and approves in Oracle. Process runs in system at individual level. Functional end-to-end at this sub-process level.",
+        gap: "No mandatory measurability validation — goal quality is not enforced. Goals can be vague with no target metric or deadline. Goal completion rate data is in Oracle but reporting not built (see 7.5.3).",
+        fix: "Add mandatory fields for goal measurability: target metric, baseline, and deadline. Enforce in Oracle form config. Creates richer data for goal completion rate dashboard.",
+        quote: "Goal setting is done in Oracle. Then manager approves in Oracle."
+      },
+      {
+        id: "7.1.3", name: "Align goals to performance plan", maturity: 2, sev: "L",
+        state: "Review cycle announcement made manually via email from HR. Employee then selects the review cycle in Oracle and assigns goals — that is how the linkage is made in system.",
+        gap: "Cycle launch is manual. HR sends announcement email, employees self-initiate in Oracle. Risk of delayed participation and incomplete goal-setting if employees miss the email.",
+        fix: "Automate review cycle launch via Oracle Performance Plan trigger. System notification replaces manual email. Eliminates participation lag. Low effort configuration change.",
+        quote: "Review cycle is announced, then goal setting needs to be done. Employee selects the review cycle and assigns goals — that is how it is linked."
+      }
+    ]
+  },
+  {
+    id: "7.2", name: "Manage Mid-Year Review",
+    color: "#F2B705", score: "1.5", highGaps: 0,
+    steps: [
+      {
+        id: "7.2.1", name: "Conduct mid-year check-in", maturity: 1, sev: "M",
+        state: "No mid-year review process exists at Tejas. Progress tracking of goals is available in Oracle and can be updated at any time, but there is no structured mid-year review cycle, no formal touchpoint, and no checkpoint built into the performance calendar.",
+        gap: "Absence of mid-year check-in means the only formal data point is the year-end rating. No interim performance signal exists — which limits the Flight Risk Model (goal drop is a Layer 1 signal requiring interim data).",
+        fix: "Introduce Oracle Performance Check-In — lightweight 2-question structured form at Q2. Low configuration effort. Mid-year data significantly improves Flight Risk Model signal quality and reduces year-end rating surprises.",
+        quote: "We don't have mid-year review but we have progress tracking of the goals which can be done at any time of the year."
+      },
+      {
+        id: "7.2.2", name: "Update goal progress and ratings", maturity: 2, sev: "M",
+        state: "Employee updates progress on goal in Oracle. Manager can approve and give comments. Feature exists in Oracle but updates are entirely ad hoc — no structured checkpoint, no mandatory update, no trigger or deadline enforced.",
+        gap: "Progress data quality is low because updates are voluntary and undirected. Uneven participation across functions means goal completion rate reporting (7.5.3) has data reliability issues.",
+        fix: "Set mandatory Q2 progress update checkpoint. Configure Oracle notification to trigger manager reminder at a defined date. Creates clean interim data without adding process overhead.",
+        quote: "Employee will update the progress on the goal and manager can approve and give comments. No review involved."
+      }
+    ]
+  },
+  {
+    id: "7.3", name: "Manage Annual Appraisal",
+    color: "#1D9E75", score: "2.5", highGaps: 1,
+    steps: [
+      {
+        id: "7.3.1", name: "Employee self-assessment", maturity: 3, sev: "L",
+        state: "Against each goal, employee rates their own performance in Oracle. Self-assessment runs fully in system. End-to-end Oracle process — one of two Level 3 sub-processes in the entire PMS module.",
+        gap: "No critical gap. Self-assessment data exists in Oracle and feeds into rating distribution reports once those are built (7.5.1). Consider adding qualitative comment field alongside numerical rating.",
+        fix: "No immediate action required. Optionally add a mandatory qualitative comment field to self-assessment form — creates richer evidence for D5 business case and manager review quality.",
+        quote: "Against each goal employee rates in Oracle."
+      },
+      {
+        id: "7.3.2", name: "Manager rating and review", maturity: 3, sev: "L",
+        state: "Manager reviews each goal, tracks progress, rates each goal individually, and gives an overall goal rating. Runs fully end-to-end in Oracle. Second of two Level 3 sub-processes in the PMS module.",
+        gap: "No critical gap. Confirm overall rating field is mandatory (not optional) in Oracle form config — prevents incomplete submissions from creating data holes in rating distribution reports.",
+        fix: "Audit Oracle Performance form configuration: confirm overall rating is a mandatory field, not optional. One-hour config check for Amjad — prevents downstream data quality issues in 7.5.1.",
+        quote: "Manager reviews each goal and tracks progress and rate each goal and gives overall goal rating."
+      },
+      {
+        id: "7.3.3", name: "HOD calibration and bell curve", maturity: 1, sev: "H", critical: true,
+        state: "Entire bell curve runs outside Oracle. Process: CNB downloads ratings report → sends to function heads → HRBP reaches out to each HOD for calibration and bell curve fitment → HRBP collects responses → shares back to CNB → CNB finalises and uploads rating to Oracle. Five-party manual loop. Oracle Talent Review (Calibration module) is not activated.",
+        gap: "This is the PMS equivalent of VT Workflow on the EXIT map — a single inactive module causing all downstream analytics to be impossible. Calibration data does not exist in Oracle in real-time. Analytics sub-processes 7.5.1, 7.5.2, and 7.5.4 are all blocked by this gap.",
+        fix: "Activate Oracle Talent Review (Calibration module). Collapse five-party manual loop into a single Oracle workflow where HODs calibrate directly in the system. Rating data enters Oracle in real-time — immediately unlocking rating distribution reports, HOD dashboard, and flight risk cross-tab.",
+        quote: "Manual downloading of report. CNB team sends details based on function heads. HRBP reaches out to function heads for calibration for bell curve fitment. HRBP collects it and shares to CNB for final look. Once that is done, rating is uploaded to Oracle."
+      },
+      {
+        id: "7.3.4", name: "Final rating communication", maturity: 3, sev: "L",
+        state: "Once rating is uploaded to Oracle post-calibration, employee can view their own rating via Employee Self-Service (ESS). Visibility is passive — employee must log into Oracle to see the rating. No automated notification sent.",
+        gap: "Communication is passive. Employees may not know their rating is available without proactive notification. No push alert from system to employee.",
+        fix: "Add automated email notification to employee when rating is finalised and uploaded. One Oracle notification rule configuration — low effort, significantly improves employee experience and reduces HRBP queries.",
+        quote: "Once that is done, employee can see their own rating."
+      }
+    ]
+  },
+  {
+    id: "7.4", name: "Manage Promotion and Increment",
+    color: "#E5484D", score: "1.3", highGaps: 2,
+    steps: [
+      {
+        id: "7.4.1", name: "Identify promotion candidates", maturity: 1, sev: "H", critical: true,
+        state: "CNB gives HRBP a manually compiled Excel sheet with eligibility data: past ratings, total experience, Tejas tenure, education, last promotion date. HRBP takes sheet to function heads for recommendations. Case-by-case review. All meetings and sheets are manual. Data shared back to CNB for Oracle update.",
+        gap: "All six data points on the CNB eligibility sheet already exist in Oracle — ratings, tenure, grade history, promotion date. This is a pure reporting gap. The manual sheet is an OTBI report waiting to be built. Every cycle, CNB recreates data that Oracle already holds.",
+        fix: "Build promotion eligibility OTBI report: auto-flag employees meeting criteria (tenure ≥ X, rating ≥ Y, months since last promotion ≥ Z, grade). Eliminate CNB manual sheet entirely. Maheshwar can build this in one day — zero config change required.",
+        quote: "CNB team will give sheet to HRBP with HR eligibility — past ratings, total experience, Tejas experience, education, last promotion date. All meetings and sheets are manual. Some manual processes are a necessity."
+      },
+      {
+        id: "7.4.2", name: "Process promotion and grade change", maturity: 2, sev: "M",
+        state: "HR Tech team (Amjad's team) processes the promotion action in Oracle — grade change, title change, effective date. Promotion decision is made offline in the manual review process (7.4.1), and Oracle is updated by HR Tech only after the decision is finalised.",
+        gap: "Oracle update step is functional but dependent on an offline trigger. Grade change process works — gap is upstream at 7.4.1. Fix 7.4.1 and 7.4.2 becomes naturally integrated.",
+        fix: "No immediate action on 7.4.2 itself. Fix 7.4.1 upstream first — once promotion eligibility is identified in Oracle, the grade change action follows as a seamless in-system workflow.",
+        quote: "By HR Tech team."
+      },
+      {
+        id: "7.4.3", name: "Process salary increment", maturity: 1, sev: "H", critical: true,
+        state: "CNB shares increment details to payroll team via manual Excel sheet. Oracle Compensation Management (Workforce Compensation module) not used for ACR cycle increment processing. Increment data does not originate in Oracle.",
+        gap: "No Oracle record of increment decisions, increment percentages, or merit matrix outcomes during ACR cycle. Comp analytics (7.5.3 equivalent) impossible without this data. Manual sheet is an error and audit risk at scale.",
+        fix: "Activate Oracle Workforce Compensation for ACR cycle. Configure grade-wise merit matrix in system — managers input increment recommendations, CNB approves in Oracle, payroll pulls directly. Eliminates manual sheet and creates increment history in OTBI.",
+        quote: "CNB team will share details to payroll team. Manual sheet."
+      }
+    ]
+  },
+  {
+    id: "7.5", name: "PMS Reporting and Analytics",
+    color: "#E5484D", score: "1.3", highGaps: 3,
+    steps: [
+      {
+        id: "7.5.1", name: "Track rating distribution and bell curve", maturity: 1, sev: "H", critical: true,
+        state: "No report built. Ratings exist in Oracle post-calibration upload but no OTBI report or dashboard has been created against this data. Leadership sees bell curve only via the CNB manual process — no self-serve view.",
+        gap: "This is a reporting gap, not a data gap. Ratings are in Oracle. OTBI Performance Management subject area exists. Zero additional configuration is required to build this report — it is purely a build task. Fastest analytics win in the entire PMS module.",
+        fix: "Build rating distribution OTBI report: % employees per rating band by function, grade, HOD. Data is confirmed in Oracle. Maheshwar builds in one day. CHRO can see bell curve distribution across functions without waiting for CNB Excel.",
+        quote: "No."
+      },
+      {
+        id: "7.5.2", name: "Cross-tab performance rating vs attrition", maturity: 1, sev: "H",
+        state: "No report built. Cross-module join between performance data and attrition (workforce) data not configured in OTBI. No mechanism to see which rating bands are resigning — high performer attrition is invisible.",
+        gap: "This is the data foundation for the Flight Risk Model Asha requested. Without this cross-tab, the performance decline signal (Layer 1, 0–25 pts) in the Flight Risk Model cannot be automated. Two prerequisites must be resolved first: VT Workflow activation (EXIT) so exits record in Oracle, and calibration module activation (PMS) so ratings are live in Oracle.",
+        fix: "Build cross-module OTBI report joining Performance Management + Workforce Management subject areas. Flag employees who resigned in last 12 months by their last rating band. Phase 2 initiative — prerequisite-gated on VT Workflow (EXIT) and Calibration module (PMS).",
+        quote: "No."
+      },
+      {
+        id: "7.5.3", name: "Track goal completion rate by function", maturity: 2, sev: "M",
+        state: "Available in Oracle — output is a manual Excel sheet extract, not a live dashboard. OTBI Goal Management subject area exists. Data is confirmed in Oracle. Report is being run but delivered as a static file rather than a live view.",
+        gap: "Data and subject area both confirmed. The gap is in delivery method — manual extract vs live dashboard. Converting this is the lowest-effort analytics improvement in the entire PMS module.",
+        fix: "Convert manual Excel extract workflow to live OTBI Goal Management dashboard. Maheshwar builds in one day — subject area confirmed, data confirmed, zero config change needed. Highest effort-to-impact ratio in PMS analytics.",
+        quote: "Available in Oracle as an Excel sheet."
+      },
+      {
+        id: "7.5.4", name: "Function Head view — team performance dashboard", maturity: 1, sev: "H",
+        state: "No dashboard exists. HODs have zero self-serve visibility into team performance data, rating distribution, goal completion status, or calibration outcomes. All data requests go through HRBP manually.",
+        gap: "HODs are the primary consumers of performance data. Every data request is a manual HRBP task. HOD dashboard is the highest-perceived-impact deliverable in PMS analytics — business leaders actively feel this absence.",
+        fix: "Build HOD-level OTBI report: team rating distribution, goal completion %, calibration status. Activate Oracle Manager Dashboard for self-serve access. Prerequisite: calibration module active so HOD sees live data, not stale post-upload snapshot.",
+        quote: "No."
+      }
+    ]
+  }
+];
+
+const maturityLabel = {1:"L1 — Manual", 2:"L2 — Partial", 3:"L3 — Integrated"};
+const dotClass = {1:"m1-dot", 2:"m2-dot", 3:"m3-dot"};
+
+let html = '';
+
+data.forEach(sec => {
+  html += `<div class="section">
+    <div class="section-header" style="--sec-color:${sec.color}">
+      <div class="section-id">${sec.id}</div>
+      <div class="section-name">${sec.name}</div>
+      ${sec.highGaps > 0 ? `<div class="section-gaps">${sec.highGaps} high gap${sec.highGaps>1?'s':''}</div>` : ''}
+      <div class="section-score">${sec.score} / 3.0</div>
+    </div>
+    <div class="steps">`;
+
+  sec.steps.forEach((step, i) => {
+    const isLast = i === sec.steps.length - 1;
+    html += `
+      <div class="step-wrap">
+        <div class="step-spine">
+          <div class="step-dot ${dotClass[step.maturity]}">${step.maturity}</div>
+          <div class="step-line ${isLast ? 'step-line-end' : ''}"></div>
+        </div>
+        <div class="step-card ${step.critical ? 'critical-card' : ''}">
+          <div class="step-top">
+            <span class="step-num-label">${step.id}</span>
+            <span class="step-name">${step.name}</span>
+            <span class="sev-badge sev-${step.sev}">${step.sev}</span>
+            <span class="maturity-badge ${step.maturity === 1 ? 'm1-badge' : step.maturity === 2 ? 'm2-badge' : 'm3-badge'}">${maturityLabel[step.maturity]}</span>
+          </div>
+          <div class="step-body">
+            <div class="row row-state">
+              <span class="row-label">Current state</span>
+              <span class="row-text">${step.state}</span>
+            </div>
+            <div class="row row-gap">
+              <span class="row-label">Bottleneck</span>
+              <span class="row-text">${step.gap}</span>
+            </div>
+            <div class="row row-fix">
+              <span class="row-label">Fix →</span>
+              <span class="row-text">${step.fix}</span>
+            </div>
+            <div class="row row-quote">
+              <span class="row-label">Verbatim</span>
+              <span class="row-text">"${step.quote}"</span>
+            </div>
+          </div>
+        </div>
+      </div>`;
+  });
+
+  html += `</div></div>`;
+});
+
+document.getElementById('root').innerHTML = html;
+</script>
+</body>
+</html>

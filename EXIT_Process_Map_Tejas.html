@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EXIT Process Map — Tejas Networks</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #F8F9FA;
+  --bg2: #FFFFFF;
+  --bg3: #F1F3F5;
+  --bg4: #E9ECEF;
+  --border: #DEE2E6;
+  --teal: #0F6E56;
+  --purple: #4A3DBF;
+  --amber: #92680A;
+  --red: #C0292D;
+  --blue: #0E69DC;
+  --text: #1A1D23;
+  --text2: #495057;
+  --text3: #868E96;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  line-height: 1.5;
+  padding: 40px 32px 80px;
+  min-width: 900px;
+}
+
+/* HEADER */
+.doc-header {
+  display: flex; align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 40px; padding-bottom: 24px;
+  border-bottom: 2px solid var(--border);
+}
+.doc-eyebrow { font-size: 10px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: #C0292D; margin-bottom: 6px; }
+.doc-title { font-size: 26px; font-weight: 600; color: var(--text); letter-spacing: -.02em; }
+.doc-subtitle { font-size: 13px; color: var(--text2); margin-top: 4px; }
+.doc-meta { text-align: right; font-family: 'DM Mono', monospace; font-size: 11px; color: var(--text3); line-height: 1.9; }
+
+/* CRITICAL ALERT */
+.critical-alert {
+  display: flex; align-items: flex-start; gap: 14px;
+  padding: 14px 18px; margin-bottom: 28px;
+  background: rgba(192,41,45,.06); border: 1.5px solid rgba(192,41,45,.3);
+  border-radius: 10px;
+}
+.alert-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+.alert-title { font-size: 12px; font-weight: 600; color: #C0292D; margin-bottom: 3px; }
+.alert-text { font-size: 12px; color: var(--text2); line-height: 1.6; }
+
+/* LEGEND */
+.legend {
+  display: flex; gap: 20px; margin-bottom: 36px;
+  padding: 12px 16px; background: var(--bg2);
+  border: 1px solid var(--border); border-radius: 8px;
+  flex-wrap: wrap; align-items: center;
+}
+.legend-item { display: flex; align-items: center; gap: 7px; font-size: 11px; color: var(--text2); }
+.legend-dot { width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 600; font-family: 'DM Mono', monospace; flex-shrink: 0; }
+.m1-dot { background: rgba(192,41,45,.10); color: #C0292D; border: 1.5px solid #C0292D; }
+.m2-dot { background: rgba(146,104,10,.10); color: #92680A; border: 1.5px solid #92680A; }
+.m3-dot { background: rgba(15,110,86,.10); color: #0F6E56; border: 1.5px solid #0F6E56; }
+.legend-sep { width: 1px; height: 20px; background: var(--border); }
+.sev-badge { font-size: 10px; font-weight: 600; padding: 2px 8px; border-radius: 4px; letter-spacing: .04em; font-family: 'DM Mono', monospace; }
+.sev-H { background: rgba(192,41,45,.10); color: #C0292D; }
+.sev-M { background: rgba(146,104,10,.10); color: #92680A; }
+.sev-L { background: rgba(15,110,86,.10); color: #0F6E56; }
+
+/* SECTION */
+.section { margin-bottom: 40px; }
+.section-header {
+  display: flex; align-items: center; gap: 14px;
+  margin-bottom: 16px; padding: 14px 18px;
+  border-radius: 10px; border: 1px solid var(--border);
+  border-left: 3px solid var(--sec-color);
+  background: var(--bg2);
+}
+.section-id { font-family: 'DM Mono', monospace; font-size: 11px; font-weight: 500; color: var(--sec-color); letter-spacing: .06em; }
+.section-name { font-size: 15px; font-weight: 600; color: var(--text); flex: 1; }
+.section-score { font-family: 'DM Mono', monospace; font-size: 13px; font-weight: 500; padding: 4px 12px; border-radius: 20px; border: 1.5px solid var(--sec-color); color: var(--sec-color); }
+.section-gaps { font-size: 11px; color: #C0292D; padding: 3px 10px; background: rgba(192,41,45,.08); border-radius: 20px; }
+
+/* STEPS */
+.steps { display: flex; flex-direction: column; }
+.step-wrap { display: flex; gap: 0; align-items: stretch; }
+.step-spine { width: 42px; display: flex; flex-direction: column; align-items: center; flex-shrink: 0; }
+.step-dot { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'DM Mono', monospace; font-size: 11px; font-weight: 600; flex-shrink: 0; position: relative; z-index: 2; margin-top: 14px; }
+.step-line { width: 2px; flex: 1; background: var(--border); margin: 3px 0; }
+.step-line-end { background: transparent; }
+.step-card { flex: 1; margin: 8px 0; border-radius: 10px; border: 1px solid var(--border); background: var(--bg2); overflow: hidden; }
+.step-card:hover { border-color: #ADB5BD; box-shadow: 0 2px 8px rgba(0,0,0,.06); }
+.pending-card { border-color: rgba(146,104,10,.4); background: #FFFDF5; }
+.critical-card { border-color: rgba(192,41,45,.35); background: #FFFAFA; }
+
+/* card top */
+.step-top { display: flex; align-items: center; gap: 10px; padding: 10px 14px; background: var(--bg3); border-bottom: 1px solid var(--border); }
+.step-num-label { font-family: 'DM Mono', monospace; font-size: 10px; font-weight: 500; color: var(--text3); }
+.step-name-text { font-size: 13px; font-weight: 600; color: var(--text); flex: 1; }
+.maturity-badge { font-size: 10px; font-weight: 500; padding: 2px 9px; border-radius: 20px; font-family: 'DM Mono', monospace; white-space: nowrap; }
+.m1-badge { background: rgba(192,41,45,.10); color: #C0292D; }
+.m2-badge { background: rgba(146,104,10,.10); color: #92680A; }
+.m3-badge { background: rgba(15,110,86,.10); color: #0F6E56; }
+.critical-tag { font-size: 9px; font-weight: 700; padding: 2px 7px; border-radius: 4px; background: #C0292D; color: #fff; letter-spacing: .06em; text-transform: uppercase; white-space: nowrap; }
+
+/* rows */
+.row { display: flex; align-items: flex-start; gap: 12px; padding: 9px 14px; border-bottom: 1px solid var(--border); }
+.row:last-child { border-bottom: none; }
+.row-label { font-size: 9px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; min-width: 72px; padding-top: 1px; flex-shrink: 0; }
+.row-text { font-size: 12px; color: var(--text2); line-height: 1.6; }
+.row-state { background: rgba(14,105,220,.03); }
+.row-state .row-label { color: #0E69DC; }
+.row-gap { background: rgba(192,41,45,.03); }
+.row-gap .row-label { color: #C0292D; }
+.row-fix { background: rgba(15,110,86,.04); }
+.row-fix .row-label { color: #0F6E56; }
+.row-quote { background: #FAFAFA; }
+.row-quote .row-label { color: var(--text3); }
+.row-quote .row-text { font-style: italic; color: var(--text3); font-size: 11px; }
+
+/* SUMMARY */
+.summary { margin-top: 48px; padding-top: 32px; border-top: 2px solid var(--border); }
+.summary-title { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 16px; }
+.summary-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin-bottom: 20px; }
+.summary-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; padding: 14px; }
+.s-id { font-size: 10px; color: var(--text3); font-family: 'DM Mono', monospace; margin-bottom: 4px; }
+.s-name { font-size: 11px; font-weight: 500; color: var(--text2); margin-bottom: 10px; line-height: 1.4; }
+.s-score { font-size: 22px; font-weight: 600; font-family: 'DM Mono', monospace; margin-bottom: 8px; }
+.s-bar-bg { height: 4px; background: var(--bg4); border-radius: 2px; overflow: hidden; margin-bottom: 8px; }
+.s-bar { height: 100%; border-radius: 2px; }
+.s-gaps { font-size: 10px; color: var(--text3); }
+.s-gaps span { color: #C0292D; font-weight: 500; }
+.overall-box { background: var(--bg2); border: 1.5px solid #C0292D; border-radius: 10px; padding: 18px 22px; display: flex; align-items: center; gap: 24px; }
+.overall-score-big { font-size: 36px; font-weight: 600; font-family: 'DM Mono', monospace; color: #C0292D; flex-shrink: 0; }
+.overall-label { font-size: 11px; color: var(--text3); margin-bottom: 4px; text-transform: uppercase; letter-spacing: .08em; }
+.overall-desc { font-size: 12px; color: var(--text2); line-height: 1.6; }
+.overall-insight { margin-top: 6px; font-size: 12px; color: #C0292D; font-weight: 500; }
+
+/* stat strip */
+.stat-strip { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 28px; }
+.stat-box { background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; padding: 16px; text-align: center; }
+.stat-num { font-size: 28px; font-weight: 600; font-family: 'DM Mono', monospace; margin-bottom: 4px; }
+.stat-label { font-size: 11px; color: var(--text3); }
+</style>
+</head>
+<body>
+
+<div class="doc-header">
+  <div>
+    <div class="doc-eyebrow">D1 Diagnostic · APQC Process Maturity · EXIT</div>
+    <div class="doc-title">Separation & Offboarding — Process Map</div>
+    <div class="doc-subtitle">Step-level current state, bottlenecks, and recommendations · Tejas Networks</div>
+  </div>
+  <div class="doc-meta">
+    TAS Internship 2026<br>
+    Utsav Chouhan<br>
+    17 sub-processes assessed<br>
+    Overall: 1.5 / 3.0
+  </div>
+</div>
+
+<!-- Key stat strip -->
+<div class="stat-strip">
+  <div class="stat-box">
+    <div class="stat-num" style="color:#C0292D">11/17</div>
+    <div class="stat-label">sub-processes at Level 1</div>
+  </div>
+  <div class="stat-box">
+    <div class="stat-num" style="color:#C0292D">8</div>
+    <div class="stat-label">high-severity gaps</div>
+  </div>
+  <div class="stat-box">
+    <div class="stat-num" style="color:#92680A">0</div>
+    <div class="stat-label">analytics dashboards possible today</div>
+  </div>
+  <div class="stat-box">
+    <div class="stat-num" style="color:#0F6E56">1</div>
+    <div class="stat-label">sub-process at Level 3 (KT checklist)</div>
+  </div>
+</div>
+
+<!-- Critical alert -->
+<div class="critical-alert">
+  <div class="alert-icon">⚠</div>
+  <div>
+    <div class="alert-title">SINGLE MOST CRITICAL BLOCKER — VT Workflow inactive</div>
+    <div class="alert-text">Voluntary exits are not recorded in Oracle. Every downstream stage — exit interview module, attrition analytics, separation reporting — is structurally broken until VT Workflow is activated. This one fix unlocks approximately 80% of all exit analytics capability overnight. It requires no additional licence. It is a configuration switch.</div>
+  </div>
+</div>
+
+<div class="legend">
+  <div class="legend-item"><div class="legend-dot m1-dot">1</div>Level 1 — Manual</div>
+  <div class="legend-item"><div class="legend-dot m2-dot">2</div>Level 2 — Partial</div>
+  <div class="legend-item"><div class="legend-dot m3-dot">3</div>Level 3 — Integrated</div>
+  <div class="legend-sep"></div>
+  <div class="legend-item"><div class="sev-badge sev-H">H</div>High gap — direct business cost</div>
+  <div class="legend-item"><div class="sev-badge sev-M">M</div>Medium — workarounds exist</div>
+  <div class="legend-item"><div class="sev-badge sev-L">L</div>Low — minor inconvenience</div>
+</div>
+
+<div id="root"></div>
+
+<div class="summary">
+  <div class="summary-title">EXIT maturity summary</div>
+  <div class="summary-grid">
+    <div class="summary-card">
+      <div class="s-id">8.1</div>
+      <div class="s-name">Resignation & Notice</div>
+      <div class="s-score" style="color:#92680A">2.0</div>
+      <div class="s-bar-bg"><div class="s-bar" style="width:67%;background:#92680A"></div></div>
+      <div class="s-gaps"><span>2 high gaps</span> · VT workflow + Friday sheet</div>
+    </div>
+    <div class="summary-card">
+      <div class="s-id">8.2</div>
+      <div class="s-name">Exit Interview</div>
+      <div class="s-score" style="color:#C0292D">1.0</div>
+      <div class="s-bar-bg"><div class="s-bar" style="width:33%;background:#C0292D"></div></div>
+      <div class="s-gaps"><span>3 high gaps</span> · module not activated</div>
+    </div>
+    <div class="summary-card">
+      <div class="s-id">8.3</div>
+      <div class="s-name">Offboarding Tasks</div>
+      <div class="s-score" style="color:#92680A">2.3</div>
+      <div class="s-bar-bg"><div class="s-bar" style="width:77%;background:#92680A"></div></div>
+      <div class="s-gaps">0 high gaps · KT is only L3 process</div>
+    </div>
+    <div class="summary-card">
+      <div class="s-id">8.4</div>
+      <div class="s-name">F&amp;F Settlement</div>
+      <div class="s-score" style="color:#C0292D">1.0</div>
+      <div class="s-bar-bg"><div class="s-bar" style="width:33%;background:#C0292D"></div></div>
+      <div class="s-gaps"><span>1 high gap</span> · payroll status unconfirmed</div>
+    </div>
+    <div class="summary-card">
+      <div class="s-id">8.5</div>
+      <div class="s-name">Analytics</div>
+      <div class="s-score" style="color:#C0292D">1.0</div>
+      <div class="s-bar-bg"><div class="s-bar" style="width:33%;background:#C0292D"></div></div>
+      <div class="s-gaps"><span>4 high gaps</span> · all blocked by VT workflow</div>
+    </div>
+  </div>
+  <div class="overall-box">
+    <div>
+      <div class="overall-label">Overall EXIT score</div>
+      <div class="overall-score-big">1.5 <span style="font-size:16px;color:#868E96">/ 3.0</span></div>
+    </div>
+    <div style="flex:1">
+      <div class="overall-desc">11 of 17 sub-processes score Level 1. The separation process is analytically blind. The exit interview module is not activated. F&F settlement Oracle involvement is unconfirmed. The only Level 3 process in the entire module is KT checklist completion — everything else relies on manual Excel sheets, emails, and verbal confirmations. Every analytics sub-process (8.5) is blocked until VT Workflow is activated.</div>
+      <div class="overall-insight">→ VT Workflow activation is the single highest-leverage action in the entire HRIS roadmap — one configuration change, systemic impact across all five sub-groups</div>
+    </div>
+  </div>
+</div>
+
+<script>
+const data = [
+  {
+    id:"8.1", name:"Manage Resignation and Notice Period",
+    color:"#92680A", score:"2.0", highGaps:2,
+    steps:[
+      {
+        id:"8.1.1", name:"Employee submits resignation", maturity:3, sev:"H", critical:true,
+        state:"Employee navigates to Oracle, goes to Employment Info section, and selects 'Cancel Work Relationship / Resign from Employment'. The Oracle UI for resignation submission exists and is used. However VT Workflow is inactive — the resignation is recorded in Oracle but not classified as a voluntary termination event downstream.",
+        gap:"VT Workflow inactive means resignation is entered but not processed as a voluntary exit. All downstream analytics — attrition reports, exit reason tracking, separation dashboards — receive incomplete or no data despite the resignation being in Oracle.",
+        fix:"Activate VT Workflow immediately. This is the single most critical fix in the entire EXIT module. Configuration only — no additional licence required. Unlocks all downstream analytics.",
+        quote:"Employee goes to Oracle. There is a section called Employment Info and cancel work relationship / resign from employment."
+      },
+      {
+        id:"8.1.2", name:"Manager and HR acknowledgement", maturity:2, sev:"H",
+        state:"Manager receives email to acknowledge and approve resignation. Notification sent to HRBP and HR Ops for approval. However: LWD and notice period shortfall tracking is entirely manual. Oracle separation report downloaded, VLOOKUP applied to a manual sheet. Resignation date, LWD, resignation approval status all filled manually. Notice period served and shortfall calculated in the sheet.",
+        gap:"Manual VLOOKUP sheet runs in parallel with Oracle for every resignation. Notice period shortfall — a financial calculation — lives in Excel, not Oracle.",
+        fix:"Configure Oracle Notice Period field to capture LWD and shortfall directly at resignation stage. Eliminate manual VLOOKUP sheet. Notice period calculation should be automatic from resignation date and contract terms.",
+        quote:"Oracle separation report gets downloaded, VLOOKUP from that to a manual sheet. Resignation date, LWD, resignation approval status is all filled manually. Notice period served and shortfall date calculated in the sheet."
+      },
+      {
+        id:"8.1.3", name:"Notice period tracking and buyout processing", maturity:2, sev:"M",
+        state:"Notice waiver requested from manager. If approved, waiver is filled both in the manual sheet and in Oracle — dual entry for every waiver. Manager is only consulted if the employee does not have sufficient PL balance.",
+        gap:"Dual entry system — every waiver decision is entered twice. Oracle and the manual sheet are maintained in parallel with no single source of truth.",
+        fix:"Eliminate dual entry. Oracle should be the single entry point for notice waiver decisions. Manual sheet entry should be discontinued once Oracle captures the waiver workflow.",
+        quote:"Waive off is asked from manager and then filled in the manual sheet and in the Oracle sheet as well."
+      },
+      {
+        id:"8.1.4", name:"Compile weekly resignation and retention list", maturity:1, sev:"H",
+        state:"Every Friday, Bineeta manually compiles a resignation sheet from the master sheet she maintains and shares it with Anumitra for relieving date and personal email ID details. This is a recurring manual process — every week, every resignation, compiled by hand.",
+        gap:"Bineeta's Friday sheet is entirely manual with zero Oracle involvement. It is a symptom of VT Workflow being inactive — once activated, this report becomes an OTBI query, not a weekly spreadsheet exercise.",
+        fix:"Activate VT Workflow → build OTBI Active Resignation report. Bineeta's Friday sheet becomes obsolete. Quantify time saved: (time to compile sheet per week × 52) = D5 business case anchor.",
+        quote:"Every Friday updated sheet (resignation sheet) from the master sheet that Bineeta maintains is shared with Anumitra for relieving date and personal email ID."
+      }
+    ]
+  },
+  {
+    id:"8.2", name:"Manage Exit Interview",
+    color:"#C0292D", score:"1.0", highGaps:3,
+    steps:[
+      {
+        id:"8.2.1", name:"Schedule and conduct exit interview", maturity:1, sev:"H",
+        state:"Bineeta shares the resignation sheet with Prerna and Kiran. All three conduct exit interviews. Interviews are offline. A manual sheet is maintained for responses. No Oracle involvement at any stage — scheduling, conduct, and recording are all outside the system.",
+        gap:"Exit interview is completely off-system. No Oracle record of whether an exit interview was conducted, who conducted it, or when.",
+        fix:"Activate Oracle Exit Interview module. Standardise interview format in Oracle. Assign interview ownership to HRBP within Oracle so completion is trackable.",
+        quote:"Bineeta shares the resignation sheet with Prerna and Kiran. All three take exit interviews. Offline interview, manual sheet is maintained."
+      },
+      {
+        id:"8.2.2", name:"Capture exit reasons and feedback", maturity:1, sev:"H",
+        state:"Exit reasons logged in a separate offline sheet — completely disconnected from Oracle. The exit taxonomy (8 buckets, 33 sub-tag combinations) designed for this purpose has no Oracle home until the Exit Interview module is activated.",
+        gap:"Exit reason data exists in a spreadsheet with no analytical structure, no HRBP view, and no connection to any other Oracle module. Root cause analysis is impossible.",
+        fix:"Activate Oracle Exit Interview module and map the 8-bucket exit taxonomy (compensation, career growth, role content, manager, work-life, personal, performance-linked, conduct) with 33 sub-tags into the module. Structured capture at source.",
+        quote:"Manual sheet is maintained as the responses."
+      },
+      {
+        id:"8.2.3", name:"Categorise exit drivers for analytics", maturity:1, sev:"H",
+        state:"In Oracle, all resignations currently fall under a single 'Voluntary' category and all terminations under 'Involuntary'. No sub-categorisation. No push vs pull classification. No compensation vs culture distinction. Binary classification is analytically useless.",
+        gap:"Single flat 'Voluntary' category means exit driver analysis is impossible. Cannot distinguish compensation exits from career exits from manager exits — the three most actionable categories.",
+        fix:"Implement 8-bucket taxonomy with push/pull and voluntary/involuntary classification. Binary voluntary/involuntary is insufficient for any meaningful analytics. Exit Interview module activation is the prerequisite.",
+        quote:"In Oracle — all resignations are coming directly under voluntary and terminations as involuntary."
+      }
+    ]
+  },
+  {
+    id:"8.3", name:"Manage Offboarding Tasks",
+    color:"#92680A", score:"2.3", highGaps:0,
+    steps:[
+      {
+        id:"8.3.1", name:"IT asset and access revocation", maturity:2, sev:"M",
+        state:"Notification sent to HR one day prior to employee LWD. HR then generates a manual email to internal stakeholders to initiate laptop return and system access removal. Automatic email goes to manager but if there are multiple departing employees, the manager receives separate emails for each rather than one consolidated notification.",
+        gap:"Fragmented notification — one email per departing employee rather than consolidated. Manual HR step between Oracle trigger and IT action.",
+        fix:"Configure Oracle Offboarding Checklist to auto-trigger a consolidated IT revocation notification. Also generate resignation acceptance letter through Oracle rather than manual email — currently issued as a manual probationary relieving letter.",
+        quote:"Notification comes to HR one day prior to LWD. Then HR generates manual email to internal stakeholder to initiate laptop and system access removal. If there are three employees, manager receives three different emails rather than one clubbed one."
+      },
+      {
+        id:"8.3.2", name:"Knowledge transfer and handover", maturity:3, sev:"L",
+        state:"KT is done internally. Manager completes the KT checklist directly in Oracle. This is the single best-functioning sub-process in the entire EXIT module — fully in Oracle, data captured, dashboard possible.",
+        gap:"No critical gap. KT completion rate can already be reported from Oracle.",
+        fix:"No immediate action. Monitor KT completion rate via OTBI — data already exists. This is the benchmark for what other sub-processes should look like.",
+        quote:"KT is done internally. Manager completes the checklist in Oracle."
+      },
+      {
+        id:"8.3.3", name:"NOC and clearance from departments", maturity:2, sev:"M",
+        state:"Admin and ICT clearances completed by responsible teams in Oracle. F&F settlement: payroll team manually sends email confirming settlement is done. HR checks if all clearances are complete in Oracle and then sends a manual relieving letter via email. Final step is manual despite clearances being in Oracle.",
+        gap:"Relieving letter issued manually via email despite all clearance data existing in Oracle. BIP can generate this automatically.",
+        fix:"Automate relieving letter via Oracle BIP. Trigger BIP letter generation on clearance completion in Oracle — eliminates manual email step. Within existing Oracle licence.",
+        quote:"Payroll team sends the mail manually that settlement is done. HR checks if all clearance is done in Oracle and then sends a manual relieving letter email."
+      }
+    ]
+  },
+  {
+    id:"8.4", name:"Manage Full & Final Settlement",
+    color:"#C0292D", score:"1.0", highGaps:1,
+    steps:[
+      {
+        id:"8.4.1", name:"Calculate F&F — leave encashment and gratuity", maturity:1, sev:"H", pending:true,
+        state:"⚠ Data pending — payroll team confirmation required. F&F calculation covers leave balance, gratuity eligibility, and notice period recovery. Oracle Payroll and Absence Management integration status unconfirmed. Score held at Level 1 conservatively pending confirmation.",
+        gap:"If Oracle Payroll is not active for F&F, all settlement calculations happen outside Oracle with no system record. Compliance and audit risk.",
+        fix:"Confirm with payroll team: is Oracle Payroll + Absence Management active for F&F calculations? If yes, wire into F&F workflow. If no, this becomes a Phase 1 activation item.",
+        quote:"⚠ Pending payroll team confirmation before finalising score."
+      },
+      {
+        id:"8.4.2", name:"Process final payroll and tax", maturity:1, sev:"M", pending:true,
+        state:"⚠ Data pending — confirmation required on whether Oracle Payroll is active. If Oracle Payroll is not the system of record for final payroll processing, this runs entirely outside Oracle.",
+        gap:"Final payroll and Form 16 generation may be entirely off-system. Cannot confirm without payroll team input.",
+        fix:"Confirm if Oracle Payroll is active. If yes, configure F&F payroll run within Oracle. If no, flag as Phase 1 activation item alongside F&F calculation.",
+        quote:"⚠ Pending payroll team confirmation."
+      },
+      {
+        id:"8.4.3", name:"Issue relieving letter and experience certificate", maturity:1, sev:"M",
+        state:"Relieving letter and experience certificate issued manually via email after HR confirms all clearances are done in Oracle. Documents not generated from Oracle — drafted manually or from a Word template outside the system.",
+        gap:"Final employment documents generated outside Oracle despite all underlying data (employment dates, designation, clearances) being in Oracle.",
+        fix:"Activate Oracle BIP for relieving letter and experience certificate generation directly from HCM data. Within existing Oracle licence — quick win that eliminates manual document drafting.",
+        quote:"Manual relieving letter email. (Inferred from 8.3.3 — confirmed pattern: Oracle clearance checked, document issued manually.)"
+      }
+    ]
+  },
+  {
+    id:"8.5", name:"Separation Reporting and Analytics",
+    color:"#C0292D", score:"1.0", highGaps:4,
+    steps:[
+      {
+        id:"8.5.1", name:"Active resignation tracker — real time", maturity:1, sev:"H",
+        state:"No real-time tracker exists. Bineeta's Friday sheet is the current substitute — a manually compiled Excel updated once a week. No Oracle involvement. Employees serving notice period cannot be viewed in real time by HRBPs or CHRO.",
+        gap:"Weekly manual Excel is the only visibility into active resignations. A resignation received on Monday is invisible to CHRO until Friday's sheet. Zero real-time capability.",
+        fix:"Activate VT Workflow → OTBI Active Resignation report automatically replaces Bineeta's Friday sheet. Real-time visibility, zero manual effort. This is the most immediate ROI after VT Workflow activation.",
+        quote:"Every Friday updated sheet from the master sheet that Bineeta maintains is shared with Anumitra."
+      },
+      {
+        id:"8.5.2", name:"Monthly attrition rate by function", maturity:1, sev:"H",
+        state:"Prerna manually produces a 14-dimension attrition analysis each cycle. No OTBI report. The analysis requires Prerna to manually extract data, calculate rates, and build the cuts by function, grade, and tenure. Time-intensive, not real-time, not self-service.",
+        gap:"Prerna's manual attrition analysis is the most defensible ROI anchor in the entire module. Every cycle of this process is D5 business case evidence — quantify hours per analysis.",
+        fix:"Build OTBI attrition dashboard — function, grade, tenure, band cuts. VT Workflow must be activated first. Prerna's manual analysis becomes a dashboard refresh. Quantify: hours per analysis × frequency per year = business case.",
+        quote:"(Inferred from Prerna interview: 14-dimension manual attrition analysis. Manual, recurring, no Oracle report.)"
+      },
+      {
+        id:"8.5.3", name:"Exit reason analysis and trend", maturity:1, sev:"H",
+        state:"Not possible today. Exit Interview module not activated. Exit reasons stored in Bineeta's offline sheet in flat format. No push/pull classification. No trend analysis. No HRBP visibility. No connection to Oracle.",
+        gap:"Exit reason analytics are structurally impossible until Exit Interview module is activated and exit taxonomy is implemented. No data, no structure, no Oracle record.",
+        fix:"Activate Exit Interview module. Implement 8-bucket taxonomy. Wire to OTBI Separation subject area. Exit reason trend then becomes a standard OTBI report — no additional configuration once module is live.",
+        quote:"In system only — Oracle. All resignations under voluntary, terminations under involuntary. (No sub-categorisation.)"
+      },
+      {
+        id:"8.5.4", name:"Separation filters — function, band, location", maturity:1, sev:"H",
+        state:"OTBI separation reports exist in Oracle but lack the critical filters needed for meaningful analysis. Band field is absent from Oracle — Descriptive Flexfield (DFF) not activated. Without Band, cuts by seniority level are impossible. Function and location filters may also be misconfigured.",
+        gap:"Band DFF not activated means every separation report is missing the most important analytical dimension. Band-level attrition (EB, MB, SB) is a primary CHRO metric — currently impossible to produce.",
+        fix:"Activate Band DFF. Configure OTBI separation report with function/band/location filters. Band activation is a prerequisite for the attrition dashboard to be analytically meaningful at CHRO level.",
+        quote:"(Confirmed in Amjad workshop: filters in separation reports missing — Band field absent from Oracle.)"
+      }
+    ]
+  }
+];
+
+const maturityLabel = {1:"L1 — Manual", 2:"L2 — Partial", 3:"L3 — Integrated"};
+const dotClass = {1:"m1-dot", 2:"m2-dot", 3:"m3-dot"};
+const badgeClass = {1:"m1-badge", 2:"m2-badge", 3:"m3-badge"};
+
+let html = '';
+data.forEach(sec => {
+  html += `<div class="section">
+    <div class="section-header" style="--sec-color:${sec.color}">
+      <div class="section-id">${sec.id}</div>
+      <div class="section-name">${sec.name}</div>
+      ${sec.highGaps > 0 ? `<div class="section-gaps">${sec.highGaps} high gap${sec.highGaps>1?'s':''}</div>` : ''}
+      <div class="section-score">${sec.score} / 3.0</div>
+    </div>
+    <div class="steps">`;
+
+  sec.steps.forEach((step, i) => {
+    const isLast = i === sec.steps.length - 1;
+    html += `<div class="step-wrap">
+      <div class="step-spine">
+        <div class="step-dot ${dotClass[step.maturity]}">${step.maturity}</div>
+        <div class="step-line ${isLast ? 'step-line-end' : ''}"></div>
+      </div>
+      <div class="step-card ${step.pending ? 'pending-card' : ''} ${step.critical ? 'critical-card' : ''}">
+        <div class="step-top">
+          <span class="step-num-label">${step.id}</span>
+          <span class="step-name-text">${step.name}</span>
+          ${step.critical ? '<span class="critical-tag">Root blocker</span>' : ''}
+          <span class="sev-badge sev-${step.sev}">${step.sev}</span>
+          <span class="maturity-badge ${badgeClass[step.maturity]}">${maturityLabel[step.maturity]}</span>
+        </div>
+        <div>
+          <div class="row row-state"><span class="row-label">Current state</span><span class="row-text">${step.state}</span></div>
+          <div class="row row-gap"><span class="row-label">Bottleneck</span><span class="row-text">${step.gap}</span></div>
+          <div class="row row-fix"><span class="row-label">Fix →</span><span class="row-text">${step.fix}</span></div>
+          <div class="row row-quote"><span class="row-label">Verbatim</span><span class="row-text">"${step.quote}"</span></div>
+        </div>
+      </div>
+    </div>`;
+  });
+
+  html += `</div></div>`;
+});
+
+document.getElementById('root').innerHTML = html;
+</script>
+</body>
+</html>

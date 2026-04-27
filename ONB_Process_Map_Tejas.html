@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ONB Process Map — Tejas Networks</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #F8F9FA;
+  --bg2: #FFFFFF;
+  --bg3: #F1F3F5;
+  --bg4: #E9ECEF;
+  --border: #DEE2E6;
+  --teal: #0F6E56;
+  --purple: #4A3DBF;
+  --amber: #92680A;
+  --red: #C0292D;
+  --blue: #0E69DC;
+  --text: #1A1D23;
+  --text2: #495057;
+  --text3: #868E96;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  line-height: 1.5;
+  padding: 40px 32px 80px;
+  min-width: 900px;
+}
+
+/* HEADER */
+.doc-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 40px;
+  padding-bottom: 24px;
+  border-bottom: 2px solid var(--border);
+}
+.doc-eyebrow {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--teal);
+  margin-bottom: 6px;
+}
+.doc-title {
+  font-size: 26px;
+  font-weight: 600;
+  color: var(--text);
+  letter-spacing: -.02em;
+}
+.doc-subtitle { font-size: 13px; color: var(--text2); margin-top: 4px; }
+.doc-meta {
+  text-align: right;
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: var(--text3);
+  line-height: 1.9;
+}
+
+/* LEGEND */
+.legend {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 36px;
+  padding: 12px 16px;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.legend-item { display: flex; align-items: center; gap: 7px; font-size: 11px; color: var(--text2); }
+.legend-dot {
+  width: 22px; height: 22px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px; font-weight: 600;
+  font-family: 'DM Mono', monospace; flex-shrink: 0;
+}
+.m1-dot { background: rgba(192,41,45,.10); color: #C0292D; border: 1.5px solid #C0292D; }
+.m2-dot { background: rgba(146,104,10,.10); color: #92680A; border: 1.5px solid #92680A; }
+.m3-dot { background: rgba(15,110,86,.10); color: #0F6E56; border: 1.5px solid #0F6E56; }
+.legend-sep { width: 1px; height: 20px; background: var(--border); }
+.sev-badge {
+  font-size: 10px; font-weight: 600; padding: 2px 8px;
+  border-radius: 4px; letter-spacing: .04em;
+  font-family: 'DM Mono', monospace;
+}
+.sev-H { background: rgba(192,41,45,.10); color: #C0292D; }
+.sev-M { background: rgba(146,104,10,.10); color: #92680A; }
+.sev-L { background: rgba(15,110,86,.10); color: #0F6E56; }
+
+/* SECTION */
+.section { margin-bottom: 40px; }
+.section-header {
+  display: flex; align-items: center; gap: 14px;
+  margin-bottom: 16px; padding: 14px 18px;
+  border-radius: 10px; border-left: 3px solid var(--sec-color);
+  background: var(--bg2); border: 1px solid var(--border);
+  border-left: 3px solid var(--sec-color);
+}
+.section-id { font-family: 'DM Mono', monospace; font-size: 11px; font-weight: 500; color: var(--sec-color); letter-spacing: .06em; }
+.section-name { font-size: 15px; font-weight: 600; color: var(--text); flex: 1; }
+.section-score {
+  font-family: 'DM Mono', monospace; font-size: 13px; font-weight: 500;
+  padding: 4px 12px; border-radius: 20px;
+  border: 1.5px solid var(--sec-color); color: var(--sec-color);
+}
+.section-gaps { font-size: 11px; color: #C0292D; padding: 3px 10px; background: rgba(192,41,45,.08); border-radius: 20px; }
+
+/* STEPS */
+.steps { display: flex; flex-direction: column; }
+.step-wrap { display: flex; gap: 0; align-items: stretch; }
+.step-spine { width: 42px; display: flex; flex-direction: column; align-items: center; flex-shrink: 0; }
+.step-dot {
+  width: 28px; height: 28px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'DM Mono', monospace; font-size: 11px; font-weight: 600;
+  flex-shrink: 0; position: relative; z-index: 2; margin-top: 14px;
+}
+.step-line { width: 2px; flex: 1; background: var(--border); margin: 3px 0; }
+.step-line-end { background: transparent; }
+.step-card {
+  flex: 1; margin: 8px 0;
+  border-radius: 10px; border: 1px solid var(--border);
+  background: var(--bg2); overflow: hidden;
+}
+.step-card:hover { border-color: #ADB5BD; box-shadow: 0 2px 8px rgba(0,0,0,.06); }
+.pending-card { border-color: rgba(146,104,10,.4); background: #FFFDF5; }
+
+/* card top */
+.step-top {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 14px; background: var(--bg3);
+  border-bottom: 1px solid var(--border);
+}
+.step-num-label { font-family: 'DM Mono', monospace; font-size: 10px; font-weight: 500; color: var(--text3); }
+.step-name-text { font-size: 13px; font-weight: 600; color: var(--text); flex: 1; }
+.maturity-badge { font-size: 10px; font-weight: 500; padding: 2px 9px; border-radius: 20px; font-family: 'DM Mono', monospace; white-space: nowrap; }
+.m1-badge { background: rgba(192,41,45,.10); color: #C0292D; }
+.m2-badge { background: rgba(146,104,10,.10); color: #92680A; }
+.m3-badge { background: rgba(15,110,86,.10); color: #0F6E56; }
+
+/* rows */
+.row { display: flex; align-items: flex-start; gap: 12px; padding: 9px 14px; border-bottom: 1px solid var(--border); }
+.row:last-child { border-bottom: none; }
+.row-label { font-size: 9px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; min-width: 72px; padding-top: 1px; flex-shrink: 0; }
+.row-text { font-size: 12px; color: var(--text2); line-height: 1.6; }
+.row-state { background: rgba(14,105,220,.03); }
+.row-state .row-label { color: #0E69DC; }
+.row-gap { background: rgba(192,41,45,.03); }
+.row-gap .row-label { color: #C0292D; }
+.row-fix { background: rgba(15,110,86,.04); }
+.row-fix .row-label { color: #0F6E56; }
+.row-quote { background: #FAFAFA; }
+.row-quote .row-label { color: var(--text3); }
+.row-quote .row-text { font-style: italic; color: var(--text3); font-size: 11px; }
+
+/* SUMMARY */
+.summary { margin-top: 48px; padding-top: 32px; border-top: 2px solid var(--border); }
+.summary-title { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 16px; }
+.summary-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin-bottom: 20px; }
+.summary-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; padding: 14px; }
+.s-id { font-size: 10px; color: var(--text3); font-family: 'DM Mono', monospace; margin-bottom: 4px; }
+.s-name { font-size: 11px; font-weight: 500; color: var(--text2); margin-bottom: 10px; line-height: 1.4; }
+.s-score { font-size: 22px; font-weight: 600; font-family: 'DM Mono', monospace; margin-bottom: 8px; }
+.s-bar-bg { height: 4px; background: var(--bg4); border-radius: 2px; overflow: hidden; margin-bottom: 8px; }
+.s-bar { height: 100%; border-radius: 2px; }
+.s-gaps { font-size: 10px; color: var(--text3); }
+.s-gaps span { color: #C0292D; font-weight: 500; }
+.overall-box {
+  background: var(--bg2); border: 1.5px solid #0F6E56;
+  border-radius: 10px; padding: 18px 22px;
+  display: flex; align-items: center; gap: 24px;
+}
+.overall-score-big { font-size: 36px; font-weight: 600; font-family: 'DM Mono', monospace; color: #0F6E56; flex-shrink: 0; }
+.overall-label { font-size: 11px; color: var(--text3); margin-bottom: 4px; text-transform: uppercase; letter-spacing: .08em; }
+.overall-desc { font-size: 12px; color: var(--text2); line-height: 1.6; }
+.overall-insight { margin-top: 6px; font-size: 12px; color: #0F6E56; font-weight: 500; }
+</style>
+</head>
+<body>
+
+<div class="doc-header">
+  <div>
+    <div class="doc-eyebrow">D1 Diagnostic · APQC Process Maturity · ONB</div>
+    <div class="doc-title">Onboarding — Process Map</div>
+    <div class="doc-subtitle">Step-level current state, bottlenecks, and recommendations · Tejas Networks</div>
+  </div>
+  <div class="doc-meta">
+    TAS Internship 2026<br>
+    Utsav Chouhan<br>
+    19 sub-processes assessed<br>
+    Overall: 1.4 / 3.0
+  </div>
+</div>
+
+<div class="legend">
+  <div class="legend-item"><div class="legend-dot m1-dot">1</div>Level 1 — Manual</div>
+  <div class="legend-item"><div class="legend-dot m2-dot">2</div>Level 2 — Partial</div>
+  <div class="legend-item"><div class="legend-dot m3-dot">3</div>Level 3 — Integrated</div>
+  <div class="legend-sep"></div>
+  <div class="legend-item"><div class="sev-badge sev-H">H</div>High gap — direct business cost</div>
+  <div class="legend-item"><div class="sev-badge sev-M">M</div>Medium — workarounds exist</div>
+  <div class="legend-item"><div class="sev-badge sev-L">L</div>Low — minor inconvenience</div>
+</div>
+
+<div id="root"></div>
+
+<div class="summary">
+  <div class="summary-title">ONB maturity summary</div>
+  <div class="summary-grid">
+    <div class="summary-card">
+      <div class="s-id">6.1</div>
+      <div class="s-name">Pre-Joining Activities</div>
+      <div class="s-score" style="color:#92680A">2.3</div>
+      <div class="s-bar-bg"><div class="s-bar" style="width:77%;background:#92680A"></div></div>
+      <div class="s-gaps">0 high gaps · <span style="color:#92680A">itinerary email manual</span></div>
+    </div>
+    <div class="summary-card">
+      <div class="s-id">6.2</div>
+      <div class="s-name">Day 1 Onboarding</div>
+      <div class="s-score" style="color:#C0292D">1.5</div>
+      <div class="s-bar-bg"><div class="s-bar" style="width:50%;background:#C0292D"></div></div>
+      <div class="s-gaps"><span>2 high gaps</span> · IT cutoff + statutory forms</div>
+    </div>
+    <div class="summary-card">
+      <div class="s-id">6.3</div>
+      <div class="s-name">30–90 Day Integration</div>
+      <div class="s-score" style="color:#C0292D">1.0</div>
+      <div class="s-bar-bg"><div class="s-bar" style="width:33%;background:#C0292D"></div></div>
+      <div class="s-gaps"><span>4 high gaps</span> · entirely manual</div>
+    </div>
+    <div class="summary-card">
+      <div class="s-id">6.4</div>
+      <div class="s-name">Data Integrity</div>
+      <div class="s-score" style="color:#C0292D">1.0</div>
+      <div class="s-bar-bg"><div class="s-bar" style="width:33%;background:#C0292D"></div></div>
+      <div class="s-gaps"><span>2 high gaps</span> · 3 monthly batches</div>
+    </div>
+    <div class="summary-card">
+      <div class="s-id">6.5</div>
+      <div class="s-name">Analytics</div>
+      <div class="s-score" style="color:#C0292D">1.3</div>
+      <div class="s-bar-bg"><div class="s-bar" style="width:43%;background:#C0292D"></div></div>
+      <div class="s-gaps"><span>3 high gaps</span> · zero dashboards</div>
+    </div>
+  </div>
+  <div class="overall-box">
+    <div>
+      <div class="overall-label">Overall ONB score</div>
+      <div class="overall-score-big">1.4 <span style="font-size:16px;color:#868E96">/ 3.0</span></div>
+    </div>
+    <div style="flex:1">
+      <div class="overall-desc">Pre-joining (6.1) is the only section with partial Oracle coverage. Days 1–90 integration and all analytics are almost entirely manual. The three monthly payroll batch transfers (13th, 20th, 30th) and the Sabu column mismatch are the highest-priority fixes — both are directly quantifiable for the D5 business case. Infancy attrition OTBI report is the zero-cost quick win — data already in Oracle, report not built.</div>
+      <div class="overall-insight">→ Oracle Journey auto-trigger for 30/60/90 surveys eliminates ~180 manual sends per month at 60+ joiners</div>
+    </div>
+  </div>
+</div>
+
+<script>
+const data = [
+  {
+    id:"6.1", name:"Manage Pre-Joining Activities",
+    color:"#4A3DBF", score:"2.3", highGaps:0,
+    steps:[
+      {
+        id:"6.1.1", name:"Send offer acceptance and pre-joining communication", maturity:2, sev:"M",
+        state:"Oracle journey trigger sends initial link to candidate. Onboarding team then manually cross-verifies and sends a separate itinerary email with Day 1 schedule and contact person details — copy-pasted into email each time. No template or auto-trigger for this communication in Oracle.",
+        gap:"Manual itinerary email per joiner — copy-paste of Day 1 schedule and contact details. Compounds across 60+ joiners per month.",
+        fix:"Configure Oracle HCM onboarding notification template for Day 1 itinerary. Eliminate manual copy-paste email. One-time setup saves ~15–20 mins per joiner.",
+        quote:"When they move to HR, journey starts. Onboarding team cross-verifies and reminder mail and itinerary for the day — set format, copy and paste contact person details sent via mail manually."
+      },
+      {
+        id:"6.1.2", name:"Collect pre-joining documents", maturity:3, sev:"L",
+        state:"Candidate uploads documents via Oracle HCM journey link triggered by 'Move to HR' action in ORC. Documents collected in Oracle portal. Onboarding team verifies on Day 1 against physical originals.",
+        gap:"No confirmed automated follow-up if documents are incomplete before Day 1. Physical verification is a compliance requirement — acceptable.",
+        fix:"Confirm document completeness check enforces submission before Day 1. Incomplete submissions should trigger automatic follow-up notification rather than manual chase.",
+        quote:"Candidate uploads documents via HCM journey. Onboarding team verifies on Day 1 against physical originals."
+      },
+      {
+        id:"6.1.3", name:"Initiate background verification", maturity:2, sev:"M",
+        state:"BGV managed by recruiting team via Cfirst integration. Onboarding team performs an independent physical document verification on Day 1 — parallel to third-party BGV outcome. Cfirst approval may still be pending on Day 1 in some cases.",
+        gap:"Dual-track verification — BGV status may not be visible in Oracle on Day 1, forcing onboarding team to check email or Cfirst portal separately.",
+        fix:"Confirm Cfirst BGV status is visible in Oracle on Day 1. If not, create a simple status flag in Oracle so onboarding team has a single source of truth.",
+        quote:"Approval from the third party comes later but onboarding team verifies on the day of joining as well."
+      },
+      {
+        id:"6.1.4", name:"Create employee record in Oracle HCM Core", maturity:2, sev:"M",
+        state:"Candidate enters 'pending worker' stage in Oracle before joining. Reporting manager assigned at recruiting stage. Onboarding team manually selects and types domestic approver, international approver, functional head, and HRBP into Oracle fields — despite these being predictable from org structure.",
+        gap:"Approver hierarchy entered manually per joiner. Domestic/international approver and functional head are deterministic from department — no need for manual input.",
+        fix:"Pre-populate approver hierarchy fields from Oracle org structure. Configure default assignment rules by department to eliminate manual selection per joiner.",
+        quote:"Onboarding team puts domestic approver, international approver, functional head, and HRBP on Oracle — but select and type manually."
+      }
+    ]
+  },
+  {
+    id:"6.2", name:"Manage Day 1 Onboarding",
+    color:"#C0292D", score:"1.5", highGaps:2,
+    steps:[
+      {
+        id:"6.2.1", name:"Issue system access and IT assets", maturity:2, sev:"H",
+        state:"Critical 12:15 PM cutoff: if employee is converted before 12:15, trigger mail goes automatically to IT and front desk from Oracle. If after 12:15, IT must be informed manually. Post-conversion: employee info sheet downloaded from Oracle, inserted into a separate internal tool to auto-populate statutory forms, then printed for physical signature.",
+        gap:"Two problems: (1) Hard time cutoff creates manual fallback for any conversion after noon. (2) Oracle → external tool → print is a three-step workaround for what Oracle BIP can do natively.",
+        fix:"(1) Eliminate 12:15 PM cutoff — IT trigger should fire at point of conversion, not within a time window. (2) Explore Oracle BIP for direct statutory form generation from HCM — eliminates the external tool dependency entirely.",
+        quote:"Before 12:15 PM need to convert to send to IT team otherwise IT team needs to be informed manually. Once downloaded the form, put into internal tool which auto-populates statutory form then printed. Can we do it directly in Oracle HCM?"
+      },
+      {
+        id:"6.2.2", name:"Complete statutory forms and documentation", maturity:2, sev:"H",
+        state:"Candidate uploads data in Oracle portal. Onboarding team cross-verifies. Data then exported from Oracle into a separate internal tool to generate statutory form. Form printed, signed physically by candidate. Final record is paper — not Oracle. Oracle is input only; execution and record are outside Oracle.",
+        gap:"Oracle captures the data but generates nothing from it. An external tool and physical paper are the actual output. BIP templates can replace this within existing licence.",
+        fix:"Activate Oracle BIP for PF nomination and Form 11 generation directly from HCM data. Candidate data is already in Oracle — the extraction to an external tool is unnecessary. BIP is within existing Oracle licence.",
+        quote:"Details uploaded by candidate, cross-verified, sits in portal. Downloaded, put into internal tool which auto-populates statutory form. Then printed, cross-verified, and signed by candidate."
+      },
+      {
+        id:"6.2.3", name:"Conduct orientation and induction", maturity:1, sev:"L",
+        state:"Formal induction conducted on Day 1. Set procedure covering company overview, HR policies, code of conduct. Deliberate offline design — no Oracle involvement required for induction delivery.",
+        gap:"No system record of induction completion. Optional gap — process is intentionally offline.",
+        fix:"Optional future state: activate Oracle Learning (OLM) to track induction completion as a checklist item — provides HRBP visibility on who has completed induction vs not. Not a priority.",
+        quote:"Formal induction happens on Day 1. Set procedure. No Oracle involvement by design."
+      },
+      {
+        id:"6.2.4", name:"Assign buddy / reporting manager introduction", maturity:1, sev:"M",
+        state:"Reporting manager informally contacted by onboarding team before joining to prepare and ease Day 1. No formal buddy assignment. No Oracle task or record created. Entirely informal and undocumented.",
+        gap:"Buddy assignment is a known early attrition intervention — undocumented informal practice is a missed data point for analytics.",
+        fix:"Create an Oracle onboarding checklist task for buddy assignment — assign to HRBP, due 3 days before joining. Low effort configuration with measurable impact on early attrition.",
+        quote:"Check with reporting manager prior to joining to accommodate and make it easy. Informal — no Oracle record."
+      }
+    ]
+  },
+  {
+    id:"6.3", name:"Manage New Joiner Integration (30–90 Days)",
+    color:"#C0292D", score:"1.0", highGaps:4,
+    steps:[
+      {
+        id:"6.3.1", name:"Complete mandatory compliance training", maturity:1, sev:"H",
+        state:"OLM (Oracle Learning) not activated. Mandatory compliance training — POSH, Information Security, Code of Conduct — assigned and tracked manually. No system record of completion. No audit trail if training completion is challenged.",
+        gap:"Compliance exposure — POSH in particular requires an audit trail. Manual tracking cannot defend this if challenged legally.",
+        fix:"Activate Oracle Learning (OLM) and configure mandatory course assignments triggered on Day 1 conversion. POSH compliance requires an audit trail — this is a compliance risk, not just an efficiency gap. OLM is within existing Oracle HCM licence.",
+        quote:"OLM not activated. Mandatory training tracked manually. No Oracle record of completion."
+      },
+      {
+        id:"6.3.2", name:"Conduct 30-day check-in / feedback", maturity:1, sev:"H",
+        state:"No Oracle notification or trigger. Onboarding team manually refers to joiner database, identifies employees at 30-day mark, and manually sends survey link. Same manual process repeated for 60-day and 90-day check-ins — three separate manual interventions per joiner with no system support.",
+        gap:"~180 manual survey sends per month at 60+ joiners. Three separate manual steps per joiner across 30/60/90 days with zero system support.",
+        fix:"Configure Oracle Journey or BIP alert to auto-trigger survey link at 30, 60, and 90 days post-joining. Single configuration eliminates three manual steps per joiner. High-value, low-cost automation within existing Oracle licence.",
+        quote:"No notification is generated. Manually refer the database and manually send the survey link to the candidate — 30 days, 60 days, and 90 days."
+      },
+      {
+        id:"6.3.3", name:"Conduct 60-day review", maturity:1, sev:"H",
+        state:"Manual form sent to employees at 60-day mark. No Oracle trigger. No manager assessment structured in Oracle. Feedback not stored in Oracle — goes to Sabu folder. Same manual process as 30-day check-in.",
+        gap:"Feedback siloed in Sabu folder. No HRBP visibility. No trend analysis possible. Manager assessment not structured.",
+        fix:"Covered by same fix as 6.3.2 — Oracle Journey auto-trigger at 60 days. Additionally configure a manager task at 60-day mark requiring role clarity assessment before employee is marked fully onboarded.",
+        quote:"Again manual form sent to employees. No Oracle trigger. Feedback goes to Sabu folder."
+      },
+      {
+        id:"6.3.4", name:"Complete probation period review", maturity:1, sev:"H",
+        state:"Probation end date field exists in Oracle but confirmation workflow not activated. Probation assessment and confirmation/extension communicated manually via email or verbally. No Oracle record of outcome. Employee status not updated in Oracle post-probation.",
+        gap:"Probation outcomes unrecorded in Oracle. Significant data integrity gap — employee status remains 'probation' in system regardless of actual outcome.",
+        fix:"Activate Oracle probation confirmation workflow. Probation end date is already in Oracle — configure automated task to HRBP at T-14 days with manager assessment form. Confirmation or extension updates employee record.",
+        quote:"Probation review and confirmation/extension communicated manually. Probation end date in Oracle but workflow not activated."
+      }
+    ]
+  },
+  {
+    id:"6.4", name:"Manage Onboarding Data Integrity",
+    color:"#C0292D", score:"1.0", highGaps:2,
+    steps:[
+      {
+        id:"6.4.1", name:"Verify new joiner data in Oracle vs source documents", maturity:1, sev:"M",
+        state:"Physical documents submitted on Day 1 cross-verified against Oracle record manually by onboarding team during conversion. If mismatch found, manually corrected in Oracle. Complete data also maintained in printed format and physically filed — parallel paper record exists alongside Oracle.",
+        gap:"Parallel paper record maintained as equal primary source. Oracle should be the system of record with paper as compliance backup — not both treated equally.",
+        fix:"Implement mandatory field validation in Oracle at pending worker stage — required fields must be complete before conversion is allowed. Reduces Day 1 manual verification load.",
+        quote:"Complete data in the printed format and filed physically. Manual cross-verification of Oracle record against physical documents on Day 1."
+      },
+      {
+        id:"6.4.2", name:"Resolve column mismatch between Sabu sheet and Oracle", maturity:1, sev:"H",
+        state:"Onboarding team populates Sabu master sheet by manually copying from Oracle. Column sequence is misaligned — Oracle and Sabu fields do not map directly, requiring manual reordering. Data given to Core HR team who updates the master sheet. Three-touch process: Oracle → manual extract → Core HR update → Sabu.",
+        gap:"Column mismatch turns a data transfer into a manual reordering exercise. Chaitra's core pain point — every joiner requires this sequence.",
+        fix:"Activate Oracle Spreadsheet Loader (ADF) or configure HDL export template aligned to Sabu column sequence. Eliminates manual copy-paste. Quantify: time per joiner × monthly volume = D5 business case anchor. Highest ROI fix in the onboarding module.",
+        quote:"Populate the master data (Sabu sheet) by copying from Oracle. Column sequence is misaligned. Gives data to Core HR — she updates the master sheet."
+      },
+      {
+        id:"6.4.3", name:"Update Sabu master sheet and batch transfers to payroll", maturity:1, sev:"H",
+        state:"After Core HR updates Sabu, physical files also maintained. Bank details and PAN sent manually to payroll on the 13th. Statutory details and bank details sent manually to HR Ops for SAP ID creation on the 20th. 20th–30th joiners covered in a separate batch on the 30th. Three recurring monthly manual batches with zero Oracle involvement.",
+        gap:"Three monthly manual data batches entirely outside Oracle. No integration between Oracle HCM and SAP for payroll or HR Ops. Highest-frequency manual process in the entire module.",
+        fix:"Critical finding for D5: quantify joiners per month × time per record × 3 batches = business case anchor. Recommendation: configure Oracle HCM → SAP integration or HDL export to eliminate manual batch transfers completely.",
+        quote:"On 13th of every month, bank details/PAN and referral/joining bonus sent to payroll manually. On 20th, statutory details and bank details to HR Ops for SAP ID creation manually. On 30th, statutory forms and bank details to SAP team for 20th–30th joiners."
+      }
+    ]
+  },
+  {
+    id:"6.5", name:"Onboarding Reporting and Analytics",
+    color:"#C0292D", score:"1.3", highGaps:3,
+    steps:[
+      {
+        id:"6.5.1", name:"Track onboarding completion rate", maturity:1, sev:"H",
+        state:"Tracked manually. No OTBI report. No automated completion tracking. Onboarding team maintains a manual record of who has completed what. No visibility at HRBP or CHRO level.",
+        gap:"No dashboard possible until Oracle Journey and Checklist are activated. Analytics is a downstream benefit of upstream activation — sequence dependency.",
+        fix:"Build OTBI Onboarding Completion report once Oracle Journey/Checklist is activated. Data will exist once 6.3.1–6.3.3 fixes are implemented. Plan the report now, build after activation.",
+        quote:"Kept manually."
+      },
+      {
+        id:"6.5.2", name:"Monitor time-to-productivity by cohort", maturity:2, sev:"M",
+        state:"Partial signal available: document of records column exists in Oracle, approval notification records exist. Probation end date and conversion date are in Oracle. Some data extractable but no report built and cross-module join with Performance not attempted.",
+        gap:"Data exists as fragments across modules but no report has assembled it. Probation workflow activation is a prerequisite.",
+        fix:"Phase 2: use Oracle document of records + probation confirmation date as proxy for time-to-productivity. Cross-join with Performance rating at first review cycle. Requires 6.3.4 probation workflow activation first.",
+        quote:"We have a column, document of records. Notification to approve as well. We can take info from there."
+      },
+      {
+        id:"6.5.3", name:"Measure 30/60/90 day feedback sentiment", maturity:1, sev:"H",
+        state:"No Oracle survey activated. 30/60/90 day feedback stored in Sabu folder — not Oracle. No aggregation, no HRBP view, no trend analysis. Feedback data exists but is entirely siloed in a shared folder with no analytical structure.",
+        gap:"Feedback data exists but is analytically useless in a shared folder. No way to identify patterns, early attrition signals, or manager-level issues.",
+        fix:"Activate Oracle survey module or configure standard form with results feeding Oracle. Once in Oracle, OTBI can surface sentiment trends and early attrition signals per cohort, function, and manager.",
+        quote:"No survey feedback list in Oracle. Right now feedback stored in Sabu folder."
+      },
+      {
+        id:"6.5.4", name:"Track infancy attrition by cohort and function", maturity:1, sev:"H",
+        state:"Hire date and Last Working Date both available in Oracle. No OTBI report built. Infancy attrition — exits within 12 months — is calculable from existing Oracle data but has never been reported on. Same pattern as ORC analytics.",
+        gap:"Zero-cost quick win being missed. Data in Oracle, report not built. Every month without this report is a month of invisible early attrition.",
+        fix:"Build OTBI infancy attrition report: filter exits where LWD - Hire Date < 365 days. Segment by function, band, joining cohort, and manager. Data already in Oracle — zero additional configuration required. Single highest-value quick win in the analytics section.",
+        quote:"Hire date and Last Working Date both in Oracle. No report built."
+      }
+    ]
+  }
+];
+
+const maturityLabel = {1:"L1 — Manual", 2:"L2 — Partial", 3:"L3 — Integrated"};
+const dotClass = {1:"m1-dot", 2:"m2-dot", 3:"m3-dot"};
+const badgeClass = {1:"m1-badge", 2:"m2-badge", 3:"m3-badge"};
+
+let html = '';
+data.forEach(sec => {
+  html += `<div class="section">
+    <div class="section-header" style="--sec-color:${sec.color}">
+      <div class="section-id">${sec.id}</div>
+      <div class="section-name">${sec.name}</div>
+      ${sec.highGaps > 0 ? `<div class="section-gaps">${sec.highGaps} high gap${sec.highGaps>1?'s':''}</div>` : ''}
+      <div class="section-score">${sec.score} / 3.0</div>
+    </div>
+    <div class="steps">`;
+
+  sec.steps.forEach((step, i) => {
+    const isLast = i === sec.steps.length - 1;
+    html += `<div class="step-wrap">
+      <div class="step-spine">
+        <div class="step-dot ${dotClass[step.maturity]}">${step.maturity}</div>
+        <div class="step-line ${isLast ? 'step-line-end' : ''}"></div>
+      </div>
+      <div class="step-card ${step.pending ? 'pending-card' : ''}">
+        <div class="step-top">
+          <span class="step-num-label">${step.id}</span>
+          <span class="step-name-text">${step.name}</span>
+          <span class="sev-badge sev-${step.sev}">${step.sev}</span>
+          <span class="maturity-badge ${badgeClass[step.maturity]}">${maturityLabel[step.maturity]}</span>
+        </div>
+        <div>
+          <div class="row row-state">
+            <span class="row-label">Current state</span>
+            <span class="row-text">${step.state}</span>
+          </div>
+          <div class="row row-gap">
+            <span class="row-label">Bottleneck</span>
+            <span class="row-text">${step.gap}</span>
+          </div>
+          <div class="row row-fix">
+            <span class="row-label">Fix →</span>
+            <span class="row-text">${step.fix}</span>
+          </div>
+          <div class="row row-quote">
+            <span class="row-label">Verbatim</span>
+            <span class="row-text">"${step.quote}"</span>
+          </div>
+        </div>
+      </div>
+    </div>`;
+  });
+
+  html += `</div></div>`;
+});
+
+document.getElementById('root').innerHTML = html;
+</script>
+</body>
+</html>
